@@ -1,26 +1,11 @@
 {
-  "frame_hash": "5f04c57c55da4af2dee840f079327caad589f3a12293f02876cd6a578fad9c11",
+  "frame_hash": "6bada34d250165fc3de082105f18f9ecda0689cda2008aa9838d858b6742d16d",
   "kind": "rar.review.rev-13",
   "payload": {
     "artifacts": [
-      "share with kody.md",
-      "issue.json",
-      "evidence/skill-forge.json",
-      "evidence/synthetic-report.json",
-      "evidence/synthetic-retest.json",
-      "evidence/cross-platform-matrix.json",
-      "evidence/mutation-matrix.json",
-      "evidence/unknown-unknowns-matrix.json",
-      "evidence/closed-loop-matrix.json",
-      "evidence/fresh-clone-test.json",
-      "evidence/public-audit.json",
-      "unknown-unknowns-coverage.json",
-      "rapp/lifecycle.json",
-      "rapp/closed-loop.json",
-      "LICENSE",
-      "PRIVACY.md",
-      "SECURITY.md",
-      "docs/CROSS-AGENT.md"
+      "rapp/package.lock.json",
+      "scripts/extract_roadside_frame.py",
+      "scripts/write_handoff.py"
     ],
     "candidate": "rapp-roadside",
     "fixture": {
@@ -49,7 +34,8 @@
           "ring": "stable-main",
           "ring_manifest_sha256": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
           "source_commit": "0000000000000000000000000000000000000000",
-          "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a"
+          "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a",
+          "unreported_fields": []
         }
       },
       "case_id": "synthetic-slow-setup",
@@ -89,7 +75,8 @@
       "replay_hashes": {
         "before_state_sha256": "3b5df8fc67049911781bcd2689afff18ca5959c2c2965847a8a81638c0a8edd4",
         "input_sha256": "45403098388a2231a424dd291448329d337d2fd7b18b83f8832de64f24416d69",
-        "output_sha256": "6000ab6363314a2e05eea9dc52d4bc8a6ed2853d48540181075fabbe7e2c8af2"
+        "output_sha256": "6000ab6363314a2e05eea9dc52d4bc8a6ed2853d48540181075fabbe7e2c8af2",
+        "unreported_fields": []
       },
       "report_controls": {
         "age_seconds": 0,
@@ -114,8 +101,7 @@
         "trust_weight_bps": 8000,
         "ttl_seconds": 86400
       },
-      "report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
-      "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
+      "report_id": "a281249e497b9661c2594e780ba9e75f048425a7c40f26ceae3e9013a853b221",
       "scaling": {
         "cache_measurements": {
           "hot_cache_hits": 0,
@@ -139,14 +125,12 @@
         },
         "shard_key_sha256": "ac4eba24708afa85dabce3f3bf9354eac5d7fac705a36fa5843b44df264d7484",
         "unbounded_or_infinite_claim": false
-      },
-      "status": "PASS",
-      "tests_run": 80
+      }
     },
     "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
     "invariants": {
-      "automatic_data_bakery_network_send": false,
       "automatic_main_edit": false,
+      "automatic_maintainer_feedback_network_send": false,
       "automatic_production_deploy": false,
       "automatic_push": false,
       "automatic_teams_send": false,
@@ -157,10 +141,11 @@
       "embedded_roadside_frame": true,
       "exact_byte_bindings": true,
       "exact_replay": true,
-      "final_learning_quantum_requires_customer_pass": true,
+      "frame_only_fix_or_release": false,
       "global_lock": false,
       "global_raw_data_store": false,
       "grail": "unchanged",
+      "independent_reproduction_required": true,
       "infinity_claim": false,
       "issue_signature_domain": "rapp-roadside:issue-signature/v1",
       "issue_signature_excludes_identity_and_raw_logs": true,
@@ -174,14 +159,19 @@
       ],
       "public_repository": "https://github.com/kody-w/rapp-roadside",
       "rar_lifecycle": "reversible-install-remove",
-      "release_gate": "isolated-worktree-Canary-Nightly-Alpha-Beta",
+      "release_gate": "isolated-checkout-Canary-Nightly-Alpha-Beta",
       "scaling": "bounded-horizontal-cellular-measured-backpressure",
+      "unsigned_customer_frame_authenticity": false,
+      "unsigned_customer_frame_authority": false,
+      "verified_resolution_requires_customer_pass": true,
       "wire": "POST /chat"
     },
+    "package_lock_sha256": "c87dce14c367ba3951008952bf7dcfc4d710126edce99ea94b039be20355608e",
     "revision": 13,
     "safety": {
       "attachments": "allowlisted-hash-only",
       "credentials": "not-collected",
+      "customer_frame_origin": "untrusted-unless-externally-pinned",
       "network": "not-used",
       "network_default": "off",
       "participation": "voluntary",
@@ -193,17 +183,22 @@
       "telemetry": "none"
     },
     "skill_forge": "PASS",
-    "skill_sha256": "b0316149fac89d1f20b8e451bc9a29f3601b794f6255bb1fc489c6f587416125",
-    "source_sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d",
+    "skill_sha256": "0e9d2c75df4fd48fdea38a9cb797662df4a76ca8d5d4651f7c162164be29dd83",
+    "source_sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
     "target_main": "kody-w/rapp-roadside@main",
     "teams": {
       "instructions": "teams-sharing-instructions.md",
       "performed": false,
-      "publication_owner": "parent RAR reviewer after RAPP Pit Crew review"
+      "publication_owner": "parent reviewer after independent RAPP Pit Crew reproduction"
+    },
+    "verification": {
+      "retest_id": "0c977c4645303a4027193ea37fafaa3329f79fe01aa1b9d4cde3b8d64c36d018",
+      "retest_status": "PASS",
+      "tests_run": 94
     },
     "version": "1.0.0"
   },
-  "payload_hash": "fd96b085b0c2f52cbbfb9ea544b28ac2422f49ae88f90962d812bc2759926a6a",
+  "payload_hash": "f73fcb3fe0a78e7abfa62de9635f2dc63e3e681ec12a0e5bd184fd3d730f4415",
   "prev": null,
   "prev_wave": null,
   "seq": 0,

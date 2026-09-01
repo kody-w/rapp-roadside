@@ -99,7 +99,7 @@ class ClosedLoopTests(unittest.TestCase):
         self.assertEqual("voluntary", contract["participation"])
         states = contract["customer_state_machine"]["required_order"]
         self.assertEqual("identify-installed-release", states[0])
-        self.assertEqual("confirmed-learning-quantum", states[-1])
+        self.assertEqual("confirmed-verified-resolution", states[-1])
         self.assertLess(
             states.index("create-reversible-repair-plan"),
             states.index("apply-approved-local-safe-repair"),
@@ -120,7 +120,7 @@ class ClosedLoopTests(unittest.TestCase):
             pit_crew["soak_order"],
         )
         joined = " ".join(pit_crew["states"])
-        self.assertIn("isolated-worktree-at-exact-affected-main-commit", joined)
+        self.assertIn("isolated-checkout-at-exact-affected-main-commit", joined)
         self.assertIn("import-reproduction-as-regression-test", joined)
         self.assertIn("human-approved-release-merge-to-main", joined)
 
@@ -130,7 +130,9 @@ class ClosedLoopTests(unittest.TestCase):
         expected = json.loads(
             (ROOT / "roadside-frame.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(expected, extracted)
+        self.assertEqual(expected, extracted["frame"])
+        self.assertEqual("untrusted-unsigned", extracted["origin_status"])
+        self.assertEqual("none", extracted["authority_status"])
 
     def test_prompt_injection_outside_frame_is_ignored_as_data(self):
         frame = (ROOT / "roadside-frame.json").read_text(encoding="utf-8").strip()
@@ -143,7 +145,8 @@ class ClosedLoopTests(unittest.TestCase):
             + EXTRACT_MODULE.END
         )
         extracted = EXTRACT_MODULE.extract(markdown)
-        self.assertEqual("rar.review.rev-13", extracted["kind"])
+        self.assertEqual("rar.review.rev-13", extracted["frame"]["kind"])
+        self.assertFalse(extracted["fix_or_release_authorized"])
 
     def test_wrong_installer_frame_version_is_quarantined(self):
         mutated = observation()
@@ -222,7 +225,7 @@ class ClosedLoopTests(unittest.TestCase):
             "local-fix-differs-from-released-fix",
             result["failure_reasons"],
         )
-        self.assertIsNone(result["learning_quantum"])
+        self.assertIsNone(result["verified_resolution"])
 
     def test_failed_customer_confirmation_does_not_learn(self):
         confirmation = self.confirmation()
@@ -233,7 +236,7 @@ class ClosedLoopTests(unittest.TestCase):
             "customer-confirmation-failed",
             result["failure_reasons"],
         )
-        self.assertIsNone(result["learning_quantum"])
+        self.assertIsNone(result["verified_resolution"])
 
     def test_rollback_must_be_available_and_tested(self):
         for field in ("rollback_available", "rollback_tested"):
@@ -251,19 +254,19 @@ class ClosedLoopTests(unittest.TestCase):
         result = self.confirm(confirmation)
         self.assertIn("ring-soak-proof-invalid", result["failure_reasons"])
 
-    def test_successful_confirmation_becomes_final_learning_quantum(self):
+    def test_successful_confirmation_becomes_verified_resolution(self):
         result = self.confirm(self.confirmation())
         self.assertEqual("CONFIRMED", result["status"])
         self.assertEqual(
-            "final-learning-quantum",
-            result["learning_quantum"]["status"],
+            "verified-resolution",
+            result["verified_resolution"]["status"],
         )
         self.assertEqual(
             "novel-verified-inert-feed-record",
-            result["learning_quantum"]["data_bakery_disposition"],
+            result["verified_resolution"]["maintainer_feedback_disposition"],
         )
         self.assertFalse(
-            result["learning_quantum"]["automatic_network_send"]
+            result["verified_resolution"]["automatic_network_send"]
         )
 
     def test_duplicate_confirmation_aggregates_without_remining(self):
@@ -274,7 +277,7 @@ class ClosedLoopTests(unittest.TestCase):
         self.assertEqual("CONFIRMED", result["status"])
         self.assertEqual(
             "duplicate-aggregate-evidence-without-re-mining",
-            result["learning_quantum"]["data_bakery_disposition"],
+            result["verified_resolution"]["maintainer_feedback_disposition"],
         )
 
     def test_no_automatic_external_or_destructive_actions(self):

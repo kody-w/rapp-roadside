@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Refresh RAPP Roadside canonical agent and package integrity records."""
+"""Maintainer-only refresh of local consistency records."""
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -67,7 +68,19 @@ def _update_json(path, updates):
     _write_json(path, payload)
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--maintainer",
+        action="store_true",
+        help="acknowledge that this rewrites local consistency records",
+    )
+    args = parser.parse_args(argv)
+    if not args.maintainer:
+        parser.error(
+            "--maintainer is required; end users must verify against an "
+            "externally trusted digest instead of rewriting locks"
+        )
     source_bytes = AGENT.read_bytes()
     source_sha = _sha256(source_bytes)
     agent_lock = {
@@ -100,6 +113,10 @@ def main():
     paths.extend(
         path.relative_to(ROOT).as_posix()
         for path in sorted((ROOT / "schemas").glob("*.json"))
+    )
+    paths.extend(
+        path.relative_to(ROOT).as_posix()
+        for path in sorted((ROOT / "tests").glob("test_*.py"))
     )
     paths.extend(
         path.relative_to(ROOT).as_posix()
@@ -168,6 +185,8 @@ def main():
                 "source_sha256": source_sha,
                 "skill_sha256": skill_sha,
                 "files": len(records),
+                "authenticity_claimed": False,
+                "maintainer_only": True,
             },
             sort_keys=True,
         )

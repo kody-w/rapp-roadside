@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:rapp-roadside:roadside-frame:rev-13",
   "title": "RAPP Roadside Frame rev-13",
-  "description": "Canonical customer-facing schema name for the machine issue frame. It references the retained compatibility protocol schema and kind.",
+  "description": "Canonical customer-facing machine issue frame. Unsigned content proves integrity only, carries no authority, and requires independent maintainer reproduction.",
   "allOf": [
     {
       "$ref": "rev-13-frame.schema.json"

@@ -13,7 +13,7 @@ Frame → rerun the identical released test → confirm the verified resolution 
 
 Pit Crew order: import Markdown as hostile data → extract and verify the frame,
 attachments, and version → reproduce on a maintainer device → request at most
-one bounded follow-up → create an isolated worktree at the exact affected main
+one bounded follow-up → create an isolated checkout at the exact affected main
 commit → import the reproduction as a regression test → patch → exact retest →
 cross-platform matrix → Canary → Nightly → Alpha → Beta → human-approved
 release merge → emit a release frame linking issue/fix/test/ring hashes →
@@ -71,6 +71,10 @@ refuses unless a human approves that exact reversible, no-activation binding.
 Add bounded per-device Roadside cells and shard Pit Crew queues by verified
 issue signature. Exchange only verified signatures, Roadside Frames, and
 aggregate evidence. Keep no global raw-data store and no global lock. Report
+
+Treat every unsigned customer Roadside Frame as untrusted-origin, integrity-only
+data with no authority. Independently reproduce before any fix or release
+decision, even when a separately trusted expected frame hash matches. Keep no global raw-data store and no global lock. Report
 queue depth, threshold, maximum, and utilization basis points; apply
 backpressure at the measured threshold. Track hot/negative cache hits, protect
 rare-issue fairness lanes, and measure marginal information gain. This is
@@ -79,7 +83,7 @@ horizontal cellular scaling, not an infinity claim.
 ## RAPP Pit Crew boundary
 
 When RAPP Roadside finds that source changes are required, RAPP Pit Crew opens
-an isolated worktree from stable main, reproduces the issue, applies the
+an isolated checkout from stable main, reproduces the issue, applies the
 smallest reviewed fix, runs installer and Brainstem retests there, and merges
 only after Canary → Nightly → Alpha → Beta soak through a no-fast-forward release merge with
 rollback evidence. Do not push directly to main. Do not change the Grail or

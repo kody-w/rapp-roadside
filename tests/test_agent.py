@@ -43,6 +43,13 @@ class DiagnosisTests(unittest.TestCase):
         self.assertEqual("RAPP Roadside", result["display_name"])
         self.assertEqual("RAPP Pit Crew", result["maintainer_system"])
         self.assertEqual("Roadside Frame", result["machine_issue_artifact"])
+        self.assertEqual("untrusted", result["unsigned_frame_origin"])
+        self.assertFalse(result["unsigned_frame_authority"])
+        self.assertTrue(result["independent_reproduction_required"])
+        self.assertEqual(
+            "exact-action-allowlist",
+            result["safety"]["repair_file_scope"],
+        )
 
     def test_synthetic_report_is_byte_deterministic(self):
         before = load_fixture("synthetic-slow-setup")
@@ -105,6 +112,26 @@ class DiagnosisTests(unittest.TestCase):
             }
         )
         self.assertEqual("FAIL", retest["status"])
+
+    def test_retest_rejects_recomputed_trivial_assertion_tamper(self):
+        before = load_fixture("synthetic-slow-setup")
+        after = load_fixture("synthetic-slow-setup", "after.json")
+        report = self.perform({"operation": "diagnose", "observations": before})
+        report["retest"]["assertions"] = [
+            {"path": "safety.grail_modified", "equals": False}
+        ]
+        content = dict(report)
+        content.pop("report_id")
+        report["report_id"] = MODULE._content_id(content)
+        retest = self.perform(
+            {
+                "operation": "retest",
+                "diagnosis": report,
+                "observations": after,
+            }
+        )
+        self.assertEqual("error", retest["status"])
+        self.assertIn("canonical assertions", retest["message"])
 
     def test_linux_launcher_mode_action(self):
         report = self.perform(
@@ -176,8 +203,13 @@ class CopyRepairTests(unittest.TestCase):
         return {
             "human_approved": True,
             "action_id": action_id,
-            "source_fingerprint": MODULE._tree_fingerprint(source.resolve()),
-            "copy_target_sha256": MODULE._copy_target_hash(destination.resolve()),
+            "source_fingerprint": MODULE._repair_source_fingerprint(
+                action_id, source.resolve()
+            ),
+            "source_path_sha256": MODULE._resolved_path_hash(source.resolve()),
+            "destination_path_sha256": MODULE._resolved_path_hash(
+                destination.resolve()
+            ),
             "reversible": True,
             "activation": "copy-only-no-activation",
         }
@@ -186,7 +218,11 @@ class CopyRepairTests(unittest.TestCase):
         source = self.work / "source"
         (source / "installer").mkdir(parents=True)
         (source / "docs").mkdir()
+        (source / "settings").mkdir()
         (source / "safe.py").write_text("print('safe')\n", encoding="utf-8")
+        (source / "settings" / "app.py").write_text(
+            "api_key = 'not-copied'\n", encoding="utf-8"
+        )
         (source / ".env").write_text("VALUE=not-copied\n", encoding="utf-8")
         (source / "private-key.pem").write_text("not-copied\n", encoding="utf-8")
         (source / "start.sh").write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
@@ -220,6 +256,7 @@ class CopyRepairTests(unittest.TestCase):
         self.assertTrue(destination.joinpath("start.sh").stat().st_mode & stat.S_IXUSR)
         self.assertFalse(destination.joinpath(".env").exists())
         self.assertFalse(destination.joinpath("private-key.pem").exists())
+        self.assertFalse(destination.joinpath("settings", "app.py").exists())
         self.assertTrue(result["source_modified"] is False)
         self.assertNotIn("source_dir", result)
         self.assertNotIn("copy_dir", result)
@@ -296,6 +333,53 @@ class CopyRepairTests(unittest.TestCase):
         self.assertEqual("error", result["status"])
         self.assertFalse((source / "copy").exists())
 
+    def test_copy_in_different_parent_is_refused(self):
+        source = self.source_tree()
+        other_parent = self.work / "other"
+        other_parent.mkdir()
+        destination = other_parent / "copy"
+        action_id = "restore-launcher-executable-copy"
+        result = self.perform(
+            {
+                "operation": "prepare_repair",
+                "action_id": action_id,
+                "source_dir": str(source),
+                "copy_dir": str(destination),
+            }
+        )
+        self.assertEqual("error", result["status"])
+        self.assertFalse(destination.exists())
+
+    def test_protected_var_source_is_refused_before_scan(self):
+        result = self.perform(
+            {
+                "operation": "prepare_repair",
+                "action_id": "restore-launcher-executable-copy",
+                "source_dir": "/var",
+                "copy_dir": "/var/rapp-roadside-repair-copy",
+            }
+        )
+        self.assertEqual("error", result["status"])
+        self.assertIn("protected system", result["message"])
+
+    def test_sensitive_allowlisted_file_is_refused_before_destination(self):
+        source = self.source_tree()
+        source.joinpath("start.sh").write_text(
+            "api_key=do-not-copy\n", encoding="utf-8"
+        )
+        destination = self.work / "copy"
+        result = self.perform(
+            {
+                "operation": "prepare_repair",
+                "action_id": "restore-launcher-executable-copy",
+                "source_dir": str(source),
+                "copy_dir": str(destination),
+            }
+        )
+        self.assertEqual("error", result["status"])
+        self.assertIn("sensitive or nonpublic", result["message"])
+        self.assertFalse(destination.exists())
+
     def test_symlink_is_excluded(self):
         source = self.source_tree()
         symlink = source / "linked.py"
@@ -349,12 +433,18 @@ class CopyRepairTests(unittest.TestCase):
         self.assertEqual("approval-required", result["status"])
         self.assertFalse(result["approval"]["human_approved"])
         self.assertEqual(
-            MODULE._tree_fingerprint(source.resolve()),
+            MODULE._repair_source_fingerprint(
+                "restore-launcher-executable-copy", source.resolve()
+            ),
             result["approval"]["source_fingerprint"],
         )
         self.assertEqual(
-            MODULE._copy_target_hash(destination.resolve()),
-            result["approval"]["copy_target_sha256"],
+            MODULE._resolved_path_hash(source.resolve()),
+            result["approval"]["source_path_sha256"],
+        )
+        self.assertEqual(
+            MODULE._resolved_path_hash(destination.resolve()),
+            result["approval"]["destination_path_sha256"],
         )
         self.assertFalse(result["source_path_exported"])
         self.assertFalse(result["copy_path_exported"])
@@ -411,7 +501,105 @@ class PackageTests(unittest.TestCase):
             env={"PYTHONDONTWRITEBYTECODE": "1"},
         )
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-        self.assertEqual("PASS", json.loads(result.stdout)["status"])
+        payload = json.loads(result.stdout)
+        self.assertEqual("CONSISTENT", payload["status"])
+        self.assertFalse(payload["trusted_authenticity"])
+
+    def test_runner_preflight_accepts_external_lock_pin(self):
+        expected = hashlib.sha256(
+            (ROOT / "rapp" / "agent.lock.json").read_bytes()
+        ).hexdigest()
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "run_agent.py"),
+                "--preflight",
+                "--expected-lock-sha256",
+                expected,
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+            env={"PYTHONDONTWRITEBYTECODE": "1"},
+        )
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual("PASS", payload["status"])
+        self.assertTrue(payload["trusted_authenticity"])
+
+    def test_tamper_and_relock_never_produces_unpinned_trusted_pass(self):
+        work = ROOT / "tests" / ".work-relock"
+        if work.exists():
+            shutil.rmtree(work)
+        original_lock_digest = hashlib.sha256(
+            (ROOT / "rapp" / "agent.lock.json").read_bytes()
+        ).hexdigest()
+        try:
+            shutil.copytree(
+                ROOT,
+                work,
+                ignore=shutil.ignore_patterns(
+                    ".git",
+                    "__pycache__",
+                    "export",
+                    ".work*",
+                ),
+            )
+            with (work / "rar_installer_troubleshooter_agent.py").open(
+                "a", encoding="utf-8"
+            ) as handle:
+                handle.write("\n# local tamper reproduction\n")
+            refreshed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/refresh_integrity.py",
+                    "--maintainer",
+                ],
+                cwd=work,
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+                env={"PYTHONDONTWRITEBYTECODE": "1"},
+            )
+            self.assertEqual(
+                0, refreshed.returncode, refreshed.stdout + refreshed.stderr
+            )
+            unpinned = subprocess.run(
+                [sys.executable, "scripts/run_agent.py", "--preflight"],
+                cwd=work,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env={"PYTHONDONTWRITEBYTECODE": "1"},
+            )
+            self.assertEqual(0, unpinned.returncode)
+            unpinned_payload = json.loads(unpinned.stdout)
+            self.assertEqual("CONSISTENT", unpinned_payload["status"])
+            self.assertFalse(unpinned_payload["trusted_authenticity"])
+            pinned = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_agent.py",
+                    "--preflight",
+                    "--expected-lock-sha256",
+                    original_lock_digest,
+                ],
+                cwd=work,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env={"PYTHONDONTWRITEBYTECODE": "1"},
+            )
+            self.assertNotEqual(0, pinned.returncode)
+            self.assertEqual("error", json.loads(pinned.stdout)["status"])
+        finally:
+            if work.exists():
+                shutil.rmtree(work)
 
     def test_package_lock_records_are_current(self):
         lock = json.loads(

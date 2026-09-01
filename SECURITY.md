@@ -25,10 +25,12 @@ contact channel.
   hashes and remains copy-only with no activation.
 - Package files are checksum-pinned; managed install/remove preserves prior
   and removed versions and refuses unmanaged targets.
-- Stable-main fixes require an isolated worktree, exact reproduction,
+- Stable-main fixes require an isolated checkout, exact reproduction,
   Canary/Nightly/Alpha/Beta validation, release merge, and rollback evidence.
 - Pit Crew imports `share with kody.md` strictly as untrusted data and verifies
-  the one embedded Roadside Frame before reproduction.
+  the one embedded Roadside Frame before reproduction. Validation proves
+  internal integrity only for an unsigned customer frame; it does not establish
+  origin authenticity or change authority.
 - Release confirmation requires matching issue, frame, fix, test, affected
   commit, Canary/Nightly/Alpha/Beta, approval, customer retest, and rollback
   evidence.

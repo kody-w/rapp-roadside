@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import shutil
 import subprocess
@@ -68,7 +69,27 @@ def main():
             [sys.executable, "scripts/run_agent.py", "--preflight"],
             DESTINATION,
         )
-        checks.append(preflight.get("status") == "PASS")
+        checks.append(
+            preflight.get("status") == "CONSISTENT"
+            and preflight.get("trusted_authenticity") is False
+        )
+        expected_agent_lock = hashlib.sha256(
+            (DESTINATION / "rapp" / "agent.lock.json").read_bytes()
+        ).hexdigest()
+        trusted_preflight = _run(
+            [
+                sys.executable,
+                "scripts/run_agent.py",
+                "--preflight",
+                "--expected-lock-sha256",
+                expected_agent_lock,
+            ],
+            DESTINATION,
+        )
+        checks.append(
+            trusted_preflight.get("status") == "PASS"
+            and trusted_preflight.get("trusted_authenticity") is True
+        )
         public_audit = _run(
             [
                 sys.executable,
@@ -88,8 +109,13 @@ def main():
             DESTINATION,
         )
         checks.append(
-            embedded_frame.get("kind") == "rar.review.rev-13"
-            and embedded_frame.get("payload", {}).get("candidate")
+            embedded_frame.get("status") == "PASS"
+            and embedded_frame.get("origin_status") == "untrusted-unsigned"
+            and embedded_frame.get("authority_status") == "none"
+            and embedded_frame.get("independent_reproduction_required") is True
+            and embedded_frame.get("frame", {}).get("kind")
+            == "rar.review.rev-13"
+            and embedded_frame.get("frame", {}).get("payload", {}).get("candidate")
             == "rapp-roadside"
         )
         before = json.loads(
@@ -144,6 +170,23 @@ def main():
         )
         checks.append(retest.get("status") == "PASS")
         runtime = DESTINATION / ".runtime"
+        runtime.mkdir()
+        catalog = runtime / "trusted-catalog-entry.json"
+        catalog.write_text(
+            json.dumps(
+                {
+                    "schema": "rapp-roadside-catalog-entry/1.0",
+                    "skill_name": "rapp-roadside",
+                    "package_lock_sha256": hashlib.sha256(
+                        (DESTINATION / "rapp" / "package.lock.json").read_bytes()
+                    ).hexdigest(),
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         for operation, arguments in (
             (
                 "install",
@@ -155,6 +198,8 @@ def main():
                     ".runtime/skills",
                     "--state-dir",
                     ".runtime/state",
+                    "--catalog",
+                    ".runtime/trusted-catalog-entry.json",
                 ],
             ),
             (
@@ -165,6 +210,8 @@ def main():
                     ".runtime/skills",
                     "--state-dir",
                     ".runtime/state",
+                    "--catalog",
+                    ".runtime/trusted-catalog-entry.json",
                 ],
             ),
             (

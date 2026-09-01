@@ -9,6 +9,7 @@
     "schema",
     "support_system",
     "machine_issue_artifact",
+    "issue_signature_domain",
     "case_id",
     "platform",
     "target",
@@ -42,6 +43,9 @@
     },
     "machine_issue_artifact": {
       "const": "Roadside Frame"
+    },
+    "issue_signature_domain": {
+      "const": "rapp-roadside:issue-signature/v1"
     },
     "case_id": {
       "type": "string"
@@ -208,10 +212,49 @@
     },
     "retest": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "mode",
-        "assertions"
-      ]
+        "assertions",
+        "hardening"
+      ],
+      "properties": {
+        "mode": {
+          "const": "canonical-from-verified-diagnosis"
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 23
+        },
+        "hardening": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "require_valid_replay",
+            "require_transport_screen",
+            "require_same_ring_source_dependency_catalog_bytes",
+            "require_same_shard",
+            "reject_supplied_assertion_drift"
+          ],
+          "properties": {
+            "require_valid_replay": {
+              "const": true
+            },
+            "require_transport_screen": {
+              "const": true
+            },
+            "require_same_ring_source_dependency_catalog_bytes": {
+              "const": true
+            },
+            "require_same_shard": {
+              "const": true
+            },
+            "reject_supplied_assertion_drift": {
+              "const": true
+            }
+          }
+        }
+      }
     },
     "maintainer_handoff": {
       "type": "object",

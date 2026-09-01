@@ -13,8 +13,8 @@
       "passed": true
     },
     {
-      "actual_action": "prepare-isolated-worktree-handoff",
-      "expected_action": "prepare-isolated-worktree-handoff",
+      "actual_action": "prepare-isolated-checkout-handoff",
+      "expected_action": "prepare-isolated-checkout-handoff",
       "mutation": "direct-main",
       "passed": true
     },

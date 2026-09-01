@@ -58,6 +58,7 @@
     "required:scripts/rar_lifecycle.py",
     "required:scripts/run_agent.py",
     "required:scripts/test_fresh_clone.py",
+    "required:scripts/write_handoff.py",
     "required:teams-sharing-instructions.md",
     "required:toasted/manifest.json",
     "required:unknown-unknowns-coverage.json",
@@ -90,7 +91,7 @@
     "skill-contract:Parent RAR review owns publication",
     "skill-contract:RAPP Pit Crew",
     "skill-contract:RAPP Roadside",
-    "skill-contract:isolated feature/fix worktree",
+    "skill-contract:isolated feature/fix checkout",
     "skill-contract:one bounded next action",
     "skill-contract:toaster:generated:begin",
     "synthetic-fixture-deterministic",
@@ -108,8 +109,8 @@
   "display_name": "RAPP Roadside",
   "fixture": {
     "case_id": "synthetic-slow-setup",
-    "report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
-    "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
+    "report_id": "a281249e497b9661c2594e780ba9e75f048425a7c40f26ceae3e9013a853b221",
+    "retest_id": "0c977c4645303a4027193ea37fafaa3329f79fe01aa1b9d4cde3b8d64c36d018",
     "status": "PASS"
   },
   "license": "MIT",
@@ -124,5 +125,5 @@
   "schema": "skill-forge-result/1.0",
   "status": "PASS",
   "telemetry": false,
-  "tests_run": 80
+  "tests_run": 94
 }

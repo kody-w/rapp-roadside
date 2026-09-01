@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -18,6 +19,7 @@ EXTRA_PACKAGE_FILES = {
     "rapp/package.lock.json",
     "toasted/manifest.json",
 }
+HASH64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _sha256(path):
@@ -43,9 +45,37 @@ def _safe_target(root, relative):
     return target
 
 
-def _verify_package(root):
+def _catalog_digest(catalog_path):
+    catalog = _load_json(catalog_path)
+    if set(catalog) != {
+        "package_lock_sha256",
+        "schema",
+        "skill_name",
+    }:
+        raise ValueError("trusted catalog entry has the wrong exact shape")
+    if catalog.get("schema") != "rapp-roadside-catalog-entry/1.0":
+        raise ValueError("unsupported trusted catalog entry")
+    if catalog.get("skill_name") != "rapp-roadside":
+        raise ValueError("trusted catalog entry names a different skill")
+    digest = catalog.get("package_lock_sha256")
+    if not isinstance(digest, str) or not HASH64.fullmatch(digest):
+        raise ValueError("trusted catalog package lock digest is invalid")
+    return digest
+
+
+def _verify_package(root, expected_package_lock_sha256=None):
     root = root.resolve()
-    lock = _load_json(root / "rapp" / "package.lock.json")
+    lock_path = root / "rapp" / "package.lock.json"
+    lock_bytes = lock_path.read_bytes()
+    lock_digest = hashlib.sha256(lock_bytes).hexdigest()
+    if (
+        expected_package_lock_sha256 is not None
+        and lock_digest != expected_package_lock_sha256
+    ):
+        raise ValueError("package lock does not match the trusted catalog digest")
+    lock = json.loads(lock_bytes.decode("utf-8"))
+    if not isinstance(lock, dict):
+        raise ValueError("package lock must contain one object")
     if lock.get("schema") != "toasted-package-lock/1.0":
         raise ValueError("unsupported package lock")
     if lock.get("skill_name") != "rapp-roadside":
@@ -59,7 +89,16 @@ def _verify_package(root):
             raise ValueError(f"locked package file missing: {record.get('path')}")
         if _sha256(target) != record.get("sha256"):
             raise ValueError(f"locked package file drift: {record.get('path')}")
-    return lock
+    return lock, {
+        "integrity": "internally-consistent",
+        "origin_status": (
+            "catalog-pinned"
+            if expected_package_lock_sha256 is not None
+            else "unauthenticated"
+        ),
+        "trusted_authenticity": expected_package_lock_sha256 is not None,
+        "package_lock_sha256": lock_digest,
+    }
 
 
 def _copy_locked_package(source, staging, lock):
@@ -88,11 +127,12 @@ def _write_marker(target, payload):
     )
 
 
-def install(source, skills_dir, state_dir):
+def install(source, skills_dir, state_dir, catalog_path):
     source = source.resolve()
     skills_dir = skills_dir.resolve()
     state_dir = state_dir.resolve()
-    lock = _verify_package(source)
+    expected_digest = _catalog_digest(catalog_path)
+    lock, trust = _verify_package(source, expected_digest)
     target = skills_dir / "rapp-roadside"
     skills_dir.mkdir(parents=True, exist_ok=True)
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -108,10 +148,19 @@ def install(source, skills_dir, state_dir):
     if target.exists() and existing is None:
         shutil.rmtree(staging)
         raise ValueError("unmanaged target exists and will not be overwritten")
-    if existing and existing.get("skill_sha256") == lock["skill_sha256"]:
-        _verify_package(target)
+    if (
+        existing
+        and existing.get("skill_sha256") == lock["skill_sha256"]
+        and existing.get("package_lock_sha256")
+        == trust["package_lock_sha256"]
+    ):
+        _verify_package(target, expected_digest)
         shutil.rmtree(staging)
-        return {"status": "PASS", "result": "unchanged"}
+        return {
+            "status": "PASS",
+            "result": "unchanged",
+            **trust,
+        }
     if target.exists():
         old_hash = str(existing.get("skill_sha256") or "unknown")
         backup = state_dir / "backups" / f"rapp-roadside-{old_hash[:16]}"
@@ -127,9 +176,11 @@ def install(source, skills_dir, state_dir):
         "display_name": "RAPP Roadside",
         "skill_sha256": lock["skill_sha256"],
         "source_sha256": lock["source_sha256"],
+        "package_lock_sha256": trust["package_lock_sha256"],
         "prior_backup": backup_relative,
         "reversible": True,
         "global_lock": False,
+        **trust,
     }
     _write_marker(staging, marker)
     try:
@@ -143,6 +194,7 @@ def install(source, skills_dir, state_dir):
         "result": "installed",
         "prior_version_preserved": backup_relative is not None,
         "global_lock": False,
+        **trust,
     }
 
 
@@ -180,19 +232,23 @@ def remove(skills_dir, state_dir):
     }
 
 
-def verify(skills_dir):
+def verify(skills_dir, catalog_path):
     target = skills_dir.resolve() / "rapp-roadside"
     marker = _marker(target) if target.is_dir() else None
     if marker is None:
         raise ValueError("RAPP Roadside is not a managed local install")
-    lock = _verify_package(target)
+    expected_digest = _catalog_digest(catalog_path)
+    lock, trust = _verify_package(target, expected_digest)
     if marker.get("skill_sha256") != lock.get("skill_sha256"):
         raise ValueError("managed marker and package lock disagree")
+    if marker.get("package_lock_sha256") != trust["package_lock_sha256"]:
+        raise ValueError("managed marker and trusted package lock digest disagree")
     return {
         "status": "PASS",
         "result": "verified",
         "skill_sha256": lock["skill_sha256"],
         "global_lock": False,
+        **trust,
     }
 
 
@@ -202,6 +258,11 @@ def main(argv=None):
     parser.add_argument("--source")
     parser.add_argument("--skills-dir", required=True)
     parser.add_argument("--state-dir")
+    parser.add_argument(
+        "--catalog",
+        default=os.environ.get("RAPP_ROADSIDE_TRUSTED_CATALOG"),
+        help="externally trusted local catalog entry containing the package lock digest",
+    )
     args = parser.parse_args(argv)
     skills_dir = Path(args.skills_dir).expanduser()
     state_dir = Path(
@@ -211,11 +272,20 @@ def main(argv=None):
         if args.operation == "install":
             if not args.source:
                 raise ValueError("--source is required for install")
-            result = install(Path(args.source).expanduser(), skills_dir, state_dir)
+            if not args.catalog:
+                raise ValueError("--catalog is required for trusted install")
+            result = install(
+                Path(args.source).expanduser(),
+                skills_dir,
+                state_dir,
+                Path(args.catalog).expanduser(),
+            )
         elif args.operation == "remove":
             result = remove(skills_dir, state_dir)
         else:
-            result = verify(skills_dir)
+            if not args.catalog:
+                raise ValueError("--catalog is required for trusted verification")
+            result = verify(skills_dir, Path(args.catalog).expanduser())
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (OSError, ValueError, json.JSONDecodeError) as error:

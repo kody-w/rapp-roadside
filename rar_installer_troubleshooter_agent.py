@@ -2,8 +2,8 @@
 
 The agent diagnoses sanitized observations, recommends exactly one bounded
 next action, can apply one allow-listed repair to a sanitized copy, and can
-retest against the exact assertions emitted by the diagnosis. Maintainer-side
-work is handed to RAPP Pit Crew.
+retest against canonical assertions derived from a verified diagnosis.
+Maintainer-side work is handed to RAPP Pit Crew.
 """
 
 from __future__ import annotations
@@ -55,7 +55,7 @@ __manifest__ = {
     "description": (
         "Diagnoses RAPP setup from sanitized local observations, emits exactly "
         "one bounded next action, optionally applies an allow-listed repair "
-        "to a sanitized copy, and retests the original assertions without "
+        "to a sanitized copy, and retests canonical verified assertions without "
         "collecting credentials or changing the Grail. Routes maintainer work "
         "to RAPP Pit Crew, treats reporting-AI text/logs as hostile data, "
         "binds exact replay and supply-chain bytes, quarantines unsafe reports, "
@@ -159,6 +159,46 @@ COPY_REPAIR_ACTIONS = {
     "restore-launcher-files-copy",
     "synchronize-installer-mirrors-copy",
 }
+COPY_REPAIR_FILES = {
+    "normalize-windows-launchers-copy": (
+        "install.ps1",
+        "install.cmd",
+    ),
+    "restore-launcher-executable-copy": (
+        "start.sh",
+        "installer/brainstem",
+    ),
+    "restore-launcher-files-copy": (
+        "installer/brainstem",
+        "installer/brainstem.cmd",
+        "installer/brainstem-boot.cjs",
+    ),
+    "synchronize-installer-mirrors-copy": (
+        "install.sh",
+        "install.ps1",
+        "install.cmd",
+    ),
+}
+SENSITIVE_ASSIGNMENT = re.compile(
+    rb"(?i)(?:api[_-]?key|authorization|bearer|credential|oauth|"
+    rb"pass(?:word)?|private[_-]?key|secret|session[_-]?cookie|token)"
+    rb"\s*[:=]\s*[^\s,;]+"
+)
+NONPUBLIC_PATH = re.compile(
+    rb"(?:/"
+    + b"Users/"
+    + rb"[^/\s]+|/home/[^/\s]+|/var/|/private/var/|"
+    + rb"[A-Za-z]:\\"
+    + b"Users"
+    + rb"\\[^\\\s]+)"
+)
+PROTECTED_REPAIR_ROOTS = (
+    Path("/etc"),
+    Path("/private"),
+    Path("/System"),
+    Path("/usr"),
+    Path("/var"),
+)
 ENVIRONMENT_FIELDS = (
     "architecture",
     "certificate_state",
@@ -276,6 +316,7 @@ def _validate_observation_shape(observations):
             "environment",
             "failure_code",
             "probe_url",
+            "probe_mode",
             "replay",
             "reporting_ai",
             "signature_phase",
@@ -340,6 +381,14 @@ def _validate_observation_shape(observations):
             raise ValueError(
                 "observations.signature_input_hashes must contain exactly two SHA-256 values"
             )
+    if observations.get("probe_mode", "direct") not in {
+        "direct",
+        "follow-up",
+        "inventory",
+    }:
+        raise ValueError(
+            "observations.probe_mode must be direct, inventory, or follow-up"
+        )
 
 
 def _optional_object(value, required, location):
@@ -369,11 +418,20 @@ def _normalize_unknown_context(observations):
     bindings = observations.get("bindings")
     if bindings is None:
         bindings = {
-            "ring": "unknown",
-            "installer_release_frame_version": "unknown",
-            "source_commit": "unknown",
+            "ring": None,
+            "installer_release_frame_version": None,
+            "source_commit": None,
             "installer_sha256s": {},
-            **{field: "unknown" for field in BINDING_FIELDS},
+            "unreported_fields": sorted(
+                {
+                    "ring",
+                    "installer_release_frame_version",
+                    "source_commit",
+                    "installer_sha256s",
+                    *BINDING_FIELDS,
+                }
+            ),
+            **{field: None for field in BINDING_FIELDS},
         }
         bindings_reported = False
     else:
@@ -389,12 +447,32 @@ def _normalize_unknown_context(observations):
                 "ring_manifest_sha256",
                 "source_commit",
                 "source_tree_sha256",
+                "unreported_fields",
             },
             "observations.bindings",
         )
         if not isinstance(bindings["installer_sha256s"], dict):
             raise TypeError("observations.bindings.installer_sha256s must be an object")
+        if (
+            not isinstance(bindings["unreported_fields"], list)
+            or not all(
+                isinstance(item, str)
+                for item in bindings["unreported_fields"]
+            )
+        ):
+            raise TypeError(
+                "observations.bindings.unreported_fields must be a string array"
+            )
         bindings = dict(bindings)
+        expected_unreported = {
+            key
+            for key, value in bindings.items()
+            if key != "unreported_fields" and (value is None or value == {})
+        }
+        if set(bindings["unreported_fields"]) != expected_unreported:
+            raise ValueError(
+                "observations.bindings.unreported_fields must exactly name unavailable bindings"
+            )
         bindings_reported = True
 
     reporting_ai = observations.get("reporting_ai")
@@ -568,7 +646,7 @@ def _normalize_unknown_context(observations):
 
 
 def _unknown_hash(value):
-    return value == "unknown" or not isinstance(value, str) or not HASH64.fullmatch(value)
+    return not isinstance(value, str) or not HASH64.fullmatch(value)
 
 
 def _context_findings(context):
@@ -717,16 +795,16 @@ def _context_findings(context):
     environment_unknowns = [
         field
         for field, value in context["environment"].items()
-        if str(value).lower() == "unknown"
+        if str(value).lower() in {"unknown", "unreported"}
     ]
     bindings = context["bindings"]
     binding_unknowns = [
         field for field in BINDING_FIELDS if _unknown_hash(bindings.get(field))
     ]
     source_commit = str(bindings.get("source_commit") or "")
-    if source_commit == "unknown" or not COMMIT40.fullmatch(source_commit):
+    if not COMMIT40.fullmatch(source_commit):
         binding_unknowns.append("source_commit")
-    if str(bindings.get("ring") or "unknown") not in {
+    if str(bindings.get("ring") or "") not in {
         "stable-main",
         "canary",
         "beta",
@@ -735,6 +813,7 @@ def _context_findings(context):
         binding_unknowns.append("ring")
     if (
         context["bindings_reported"]
+        and bindings.get("installer_release_frame_version") is not None
         and bindings.get("installer_release_frame_version")
         != INSTALLER_FRAME_VERSION
     ):
@@ -747,6 +826,7 @@ def _context_findings(context):
         for name, digest in installer_hashes.items()
     ):
         binding_unknowns.append("installer_sha256s")
+    binding_unknowns.extend(bindings.get("unreported_fields") or [])
 
     cell = context["cell"]
     queue_depth = int(cell.get("queue_depth") or 0)
@@ -901,7 +981,7 @@ def _base_report(observations):
             "stable_main_identity": STABLE_MAIN_IDENTITY,
             "release_rule": (
                 "RAPP Roadside diagnoses locally. RAPP Pit Crew changes go "
-                "through an isolated worktree and a release merge; never push "
+                "through an isolated checkout and a release merge; never push "
                 "directly to main."
             ),
         },
@@ -951,6 +1031,7 @@ def _diagnose(observations):
     context_findings = _context_findings(context)
     report = _base_report(observations)
     platform_name = report["platform"]
+    probe_mode = str(observations.get("probe_mode") or "direct")
     elapsed = int(observations.get("setup_elapsed_seconds") or 0)
     if elapsed < 0 or elapsed > 86_400:
         raise ValueError("setup_elapsed_seconds must be between 0 and 86400")
@@ -1082,7 +1163,7 @@ def _diagnose(observations):
             ],
             30,
             ["pit-crew-handoff.md"],
-            "A local handoff requiring isolated-worktree restoration before release.",
+            "A local handoff requiring isolated-checkout restoration before release.",
         )
     elif direct_main:
         finding = {
@@ -1091,8 +1172,8 @@ def _diagnose(observations):
             "summary": "A direct main change would violate the release boundary.",
         }
         action = _bounded_action(
-            "prepare-isolated-worktree-handoff",
-            "Prepare one RAPP Pit Crew isolated-worktree handoff",
+            "prepare-isolated-checkout-handoff",
+            "Prepare one RAPP Pit Crew isolated-checkout handoff",
             "Stable main is a target identity, not a writable troubleshooting area.",
             platform_name,
             [
@@ -1104,7 +1185,7 @@ def _diagnose(observations):
             ],
             30,
             ["pit-crew-handoff.md"],
-            "A handoff that requires feature/fix worktree validation and release merge.",
+            "A handoff that requires feature/fix checkout validation and release merge.",
         )
     elif (
         context["cell_reported"]
@@ -1137,6 +1218,7 @@ def _diagnose(observations):
         )
     elif (
         context["environment_reported"]
+        and probe_mode != "follow-up"
         and set(context_findings["environment_unknowns"]).intersection(
             {"filesystem", "managed_policy", "os_build", "shell"}
         )
@@ -1162,12 +1244,17 @@ def _diagnose(observations):
                 "0",
                 "--output",
                 "observations.capabilities.json",
+                "--follow-up",
             ],
             30,
             ["observations.capabilities.json"],
             "A sanitized observation with explicit values or explicit unsupported states.",
         )
-    elif context["bindings_reported"] and context_findings["binding_unknowns"]:
+    elif (
+        context["bindings_reported"]
+        and context_findings["binding_unknowns"]
+        and probe_mode != "follow-up"
+    ):
         finding = {
             "code": "exact-byte-bindings-incomplete",
             "severity": "high",
@@ -1189,10 +1276,44 @@ def _diagnose(observations):
                 "0",
                 "--output",
                 "observations.bindings.json",
+                "--follow-up",
             ],
             30,
             ["observations.bindings.json"],
             "Ring, source, dependency, catalog, and installer hashes are exact or explicitly unsupported.",
+        )
+    elif (
+        probe_mode == "follow-up"
+        and (
+            set(context_findings["environment_unknowns"]).intersection(
+                {"filesystem", "managed_policy", "os_build", "shell"}
+            )
+            or context_findings["binding_unknowns"]
+        )
+    ):
+        finding = {
+            "code": "evidence-incomplete-after-follow-up",
+            "severity": "medium",
+            "summary": (
+                "One bounded follow-up completed, but some local evidence is "
+                "unavailable and must not be invented."
+            ),
+        }
+        action = _bounded_action(
+            "prepare-incomplete-evidence-handoff",
+            "Prepare one incomplete-evidence RAPP Pit Crew handoff",
+            "The local probe must not repeat indefinitely or fabricate unavailable fields.",
+            platform_name,
+            [
+                "scripts/write_handoff.py",
+                "--report",
+                "diagnosis.json",
+                "--output",
+                "pit-crew-handoff.md",
+            ],
+            30,
+            ["pit-crew-handoff.md"],
+            "One inert handoff marks unavailable evidence and requires independent reproduction.",
         )
     elif not source_present:
         finding = {
@@ -1249,8 +1370,8 @@ def _diagnose(observations):
             "summary": "The local policy-clean Brainstem launcher is missing.",
         }
         action = _bounded_action(
-            "prepare-launcher-worktree-handoff",
-            "Prepare one RAPP Pit Crew launcher worktree handoff",
+            "prepare-launcher-checkout-handoff",
+            "Prepare one RAPP Pit Crew launcher checkout handoff",
             "Missing canonical launcher files require RAPP Pit Crew review, not synthesis.",
             platform_name,
             [
@@ -1262,7 +1383,7 @@ def _diagnose(observations):
             ],
             30,
             ["pit-crew-handoff.md"],
-            "A local RAPP Pit Crew isolated-worktree/release-merge handoff.",
+            "A local RAPP Pit Crew isolated-checkout/release-merge handoff.",
         )
     elif platform_name != "windows" and not launcher_executable:
         finding = {
@@ -1431,6 +1552,7 @@ def _diagnose(observations):
         )
 
     report["observation_summary"] = {
+        "probe_mode": probe_mode,
         "setup_elapsed_seconds": elapsed,
         "setup_stage": progress,
         "source_present": source_present,
@@ -1575,7 +1697,7 @@ def _diagnose(observations):
             )
         ),
         "required_gate": (
-            "RAPP Pit Crew isolated-worktree-Canary-Nightly-Alpha-Beta"
+            "RAPP Pit Crew isolated-checkout-Canary-Nightly-Alpha-Beta"
         ),
         "stable_main_direct_push": False,
     }
@@ -1599,94 +1721,19 @@ def _diagnose(observations):
             "main_edit": False,
             "production_deploy": False,
             "destructive_customer_repair": False,
-            "data_bakery_network_send": False,
+            "maintainer_feedback_network_send": False,
         },
     }
     report["next_action"] = action
     report["retest"] = {
-        "mode": "exact-assertions",
-        "assertions": [
-            {"path": "health.status", "equals": "ok"},
-            {"path": "health.http_status", "equals": 200},
-            {"path": "chat.method", "equals": "POST"},
-            {"path": "chat.path", "equals": "/chat"},
-            {"path": "chat.request_field", "equals": "user_input"},
-            {"path": "chat.http_status", "equals": 200},
-            {
-                "path": "chat.response_keys",
-                "contains_all": ["response", "agent_logs", "session_id"],
-            },
-            {"path": "safety.grail_modified", "equals": False},
-            {
-                "path": "safety.external_network_observed",
-                "equals": False,
-            },
-            {
-                "path": "bindings.ring",
-                "equals": context["bindings"].get("ring"),
-            },
-            {
-                "path": "bindings.installer_release_frame_version",
-                "equals": context["bindings"].get(
-                    "installer_release_frame_version"
-                ),
-            },
-            {
-                "path": "bindings.installer_release_frame_sha256",
-                "equals": context["bindings"].get(
-                    "installer_release_frame_sha256"
-                ),
-            },
-            {
-                "path": "bindings.ring_manifest_sha256",
-                "equals": context["bindings"].get("ring_manifest_sha256"),
-            },
-            {
-                "path": "bindings.source_commit",
-                "equals": context["bindings"].get("source_commit"),
-            },
-            {
-                "path": "bindings.source_tree_sha256",
-                "equals": context["bindings"].get("source_tree_sha256"),
-            },
-            {
-                "path": "bindings.dependency_lock_sha256",
-                "equals": context["bindings"].get("dependency_lock_sha256"),
-            },
-            {
-                "path": "bindings.catalog_sha256",
-                "equals": context["bindings"].get("catalog_sha256"),
-            },
-            {
-                "path": "bindings.installer_sha256s",
-                "equals": context["bindings"].get("installer_sha256s"),
-            },
-            {
-                "path": "environment.os_build",
-                "equals": context["environment"].get("os_build"),
-            },
-            {
-                "path": "environment.managed_policy",
-                "equals": context["environment"].get("managed_policy"),
-            },
-            {
-                "path": "environment.filesystem",
-                "equals": context["environment"].get("filesystem"),
-            },
-            {
-                "path": "environment.shell",
-                "equals": context["environment"].get("shell"),
-            },
-            {
-                "path": "cell.shard_key_sha256",
-                "equals": context["cell"].get("shard_key_sha256"),
-            },
-        ],
+        "mode": "canonical-from-verified-diagnosis",
+        "assertions": _canonical_retest_assertions(report),
         "hardening": {
             "require_valid_replay": True,
             "require_transport_screen": True,
             "require_same_ring_source_dependency_catalog_bytes": True,
             "require_same_shard": True,
+            "reject_supplied_assertion_drift": True,
         },
     }
     report["maintainer_handoff"] = {
@@ -1696,9 +1743,9 @@ def _diagnose(observations):
         "base": "main",
         "required_flow": [
             "intake the hash-only Roadside Frame and independently reproduce",
-            "create an isolated feature/fix worktree from stable main",
+            "create an isolated feature/fix checkout from stable main",
             "import the exact failing replay as a named regression test",
-            "apply and retest the reviewed change in that worktree",
+            "apply and retest the reviewed change in that checkout",
             "pass platform and ring matrices plus clean-machine installer tests",
             "promote one-way through Canary, Nightly, Alpha, then Beta soak",
             "perform a no-fast-forward release merge with rollback evidence",
@@ -1730,17 +1777,491 @@ def _path_value(mapping, dotted_path):
     return current
 
 
+def _canonical_retest_assertions(diagnosis):
+    bindings = _value_path(
+        diagnosis, "byte_bindings", "values", default={}
+    )
+    environment = _value_path(
+        diagnosis, "platform_policy_unknowns", "values", default={}
+    )
+    return [
+        {"path": "health.status", "equals": "ok"},
+        {"path": "health.http_status", "equals": 200},
+        {"path": "chat.method", "equals": WIRE["method"]},
+        {"path": "chat.path", "equals": WIRE["path"]},
+        {"path": "chat.request_field", "equals": WIRE["request_field"]},
+        {"path": "chat.http_status", "equals": 200},
+        {
+            "path": "chat.response_keys",
+            "contains_all": list(WIRE["success_keys"]),
+        },
+        {"path": "safety.grail_modified", "equals": False},
+        {"path": "safety.external_network_observed", "equals": False},
+        {"path": "bindings.ring", "equals": bindings.get("ring")},
+        {
+            "path": "bindings.installer_release_frame_version",
+            "equals": bindings.get("installer_release_frame_version"),
+        },
+        {
+            "path": "bindings.installer_release_frame_sha256",
+            "equals": bindings.get("installer_release_frame_sha256"),
+        },
+        {
+            "path": "bindings.ring_manifest_sha256",
+            "equals": bindings.get("ring_manifest_sha256"),
+        },
+        {
+            "path": "bindings.source_commit",
+            "equals": bindings.get("source_commit"),
+        },
+        {
+            "path": "bindings.source_tree_sha256",
+            "equals": bindings.get("source_tree_sha256"),
+        },
+        {
+            "path": "bindings.dependency_lock_sha256",
+            "equals": bindings.get("dependency_lock_sha256"),
+        },
+        {
+            "path": "bindings.catalog_sha256",
+            "equals": bindings.get("catalog_sha256"),
+        },
+        {
+            "path": "bindings.installer_sha256s",
+            "equals": bindings.get("installer_sha256s"),
+        },
+        {
+            "path": "environment.os_build",
+            "equals": environment.get("os_build"),
+        },
+        {
+            "path": "environment.managed_policy",
+            "equals": environment.get("managed_policy"),
+        },
+        {
+            "path": "environment.filesystem",
+            "equals": environment.get("filesystem"),
+        },
+        {
+            "path": "environment.shell",
+            "equals": environment.get("shell"),
+        },
+        {
+            "path": "cell.shard_key_sha256",
+            "equals": _value_path(
+                diagnosis, "scaling", "shard_key_sha256", default=None
+            ),
+        },
+    ]
+
+
+def _validate_diagnosis(diagnosis):
+    _require_object_shape(
+        diagnosis,
+        {
+            "byte_bindings",
+            "case_id",
+            "closed_loop",
+            "evidence_partition",
+            "finding",
+            "invariants",
+            "issue_signature",
+            "issue_signature_domain",
+            "machine_issue_artifact",
+            "maintainer_handoff",
+            "next_action",
+            "observation_summary",
+            "platform",
+            "platform_policy_unknowns",
+            "privacy",
+            "release_readiness",
+            "replay_manifest",
+            "report_controls",
+            "report_id",
+            "retest",
+            "scaling",
+            "schema",
+            "support_system",
+            "target",
+        },
+        set(),
+        "diagnosis",
+    )
+    report_id = diagnosis.get("report_id")
+    if not isinstance(report_id, str) or not HASH64.fullmatch(report_id):
+        raise ValueError("diagnosis.report_id must be a SHA-256 value")
+    content = dict(diagnosis)
+    content.pop("report_id")
+    if _content_id(content) != report_id:
+        raise ValueError("diagnosis report_id does not match its complete content")
+    if (
+        diagnosis.get("schema") != REPORT_SCHEMA
+        or diagnosis.get("support_system") != "RAPP Roadside"
+        or diagnosis.get("machine_issue_artifact") != "Roadside Frame"
+        or diagnosis.get("issue_signature_domain") != ISSUE_SIGNATURE_DOMAIN
+    ):
+        raise ValueError("diagnosis protocol identity mismatch")
+    if diagnosis.get("platform") not in {"linux", "macos", "windows"}:
+        raise ValueError("diagnosis platform is invalid")
+    if not re.fullmatch(
+        r"[a-z0-9]+(?:-[a-z0-9]+)*",
+        str(diagnosis.get("case_id") or ""),
+    ):
+        raise ValueError("diagnosis case_id is invalid")
+
+    _require_object_shape(
+        diagnosis["target"],
+        {"release_rule", "stable_main_identity"},
+        set(),
+        "diagnosis.target",
+    )
+    if diagnosis["target"]["stable_main_identity"] != STABLE_MAIN_IDENTITY:
+        raise ValueError("diagnosis stable target mismatch")
+    _require_object_shape(
+        diagnosis["invariants"],
+        {"grail_modified", "new_rest_routes_allowed", "wire"},
+        set(),
+        "diagnosis.invariants",
+    )
+    if (
+        diagnosis["invariants"]["grail_modified"] is not False
+        or diagnosis["invariants"]["new_rest_routes_allowed"] is not False
+        or diagnosis["invariants"]["wire"] != WIRE
+    ):
+        raise ValueError("diagnosis safety invariants are invalid")
+    _require_object_shape(
+        diagnosis["privacy"],
+        {
+            "credentials_collected",
+            "external_network_used",
+            "local_copy_only",
+            "report_contains_log_bodies",
+            "telemetry",
+        },
+        set(),
+        "diagnosis.privacy",
+    )
+    if any(
+        diagnosis["privacy"][field] is not expected
+        for field, expected in {
+            "credentials_collected": False,
+            "external_network_used": False,
+            "local_copy_only": True,
+            "report_contains_log_bodies": False,
+            "telemetry": False,
+        }.items()
+    ):
+        raise ValueError("diagnosis privacy boundary is invalid")
+    _require_object_shape(
+        diagnosis["observation_summary"],
+        {
+            "chat_http_status",
+            "chat_method",
+            "chat_path",
+            "chat_request_field",
+            "chat_response_keys",
+            "health_http_status",
+            "health_status",
+            "installer_docs_mirrors_match",
+            "launcher_present",
+            "probe_mode",
+            "python_version",
+            "setup_elapsed_seconds",
+            "setup_stage",
+            "source_present",
+        },
+        set(),
+        "diagnosis.observation_summary",
+    )
+    _require_object_shape(
+        diagnosis["finding"],
+        {"code", "severity", "summary"},
+        set(),
+        "diagnosis.finding",
+    )
+    signature = diagnosis["issue_signature"]
+    _require_object_shape(
+        signature,
+        {
+            "dedupe_key",
+            "domain",
+            "fields",
+            "identity_included",
+            "queue_key",
+            "raw_logs_included",
+            "sha256",
+        },
+        set(),
+        "diagnosis.issue_signature",
+    )
+    if (
+        signature.get("domain") != ISSUE_SIGNATURE_DOMAIN
+        or signature.get("identity_included") is not False
+        or signature.get("raw_logs_included") is not False
+        or signature.get("queue_key") is not True
+        or signature.get("dedupe_key") is not True
+    ):
+        raise ValueError("diagnosis issue signature controls are invalid")
+    expected_signature = _sha256_bytes(
+        ISSUE_SIGNATURE_DOMAIN.encode("utf-8")
+        + b"\n"
+        + _canonical_json(signature["fields"]).encode("utf-8")
+    )
+    if signature.get("sha256") != expected_signature:
+        raise ValueError("diagnosis issue signature does not match its fields")
+
+    _require_object_shape(
+        diagnosis["evidence_partition"],
+        {
+            "embedded_instructions_executed",
+            "inferred",
+            "observed",
+            "raw_reporting_ai_text_or_logs_retained",
+        },
+        set(),
+        "diagnosis.evidence_partition",
+    )
+    if (
+        diagnosis["evidence_partition"]["embedded_instructions_executed"]
+        is not False
+        or diagnosis["evidence_partition"][
+            "raw_reporting_ai_text_or_logs_retained"
+        ]
+        is not False
+    ):
+        raise ValueError("diagnosis evidence partition is unsafe")
+    _require_object_shape(
+        diagnosis["platform_policy_unknowns"],
+        {"catch_all_diagnosis_used", "reported", "unknown_fields", "values"},
+        set(),
+        "diagnosis.platform_policy_unknowns",
+    )
+    _require_object_shape(
+        diagnosis["platform_policy_unknowns"]["values"],
+        set(ENVIRONMENT_FIELDS),
+        set(),
+        "diagnosis.platform_policy_unknowns.values",
+    )
+    if diagnosis["platform_policy_unknowns"]["catch_all_diagnosis_used"] is not False:
+        raise ValueError("diagnosis may not use a catch-all result")
+    _require_object_shape(
+        diagnosis["byte_bindings"],
+        {"exact", "reported", "unknown_fields", "values"},
+        set(),
+        "diagnosis.byte_bindings",
+    )
+    _require_object_shape(
+        diagnosis["byte_bindings"]["values"],
+        {
+            "catalog_sha256",
+            "dependency_lock_sha256",
+            "installer_release_frame_sha256",
+            "installer_release_frame_version",
+            "installer_sha256s",
+            "ring",
+            "ring_manifest_sha256",
+            "source_commit",
+            "source_tree_sha256",
+            "unreported_fields",
+        },
+        set(),
+        "diagnosis.byte_bindings.values",
+    )
+    if not isinstance(
+        diagnosis["byte_bindings"]["values"]["unreported_fields"], list
+    ):
+        raise TypeError("diagnosis byte binding unreported_fields must be an array")
+    _require_object_shape(
+        diagnosis["replay_manifest"],
+        {
+            "argv",
+            "before_state_sha256",
+            "duration_ms",
+            "input_sha256",
+            "logical_cwd",
+            "output_bytes",
+            "output_sha256",
+            "phase",
+            "raw_private_path_exported",
+            "reported",
+        },
+        set(),
+        "diagnosis.replay_manifest",
+    )
+    if diagnosis["replay_manifest"]["raw_private_path_exported"] is not False:
+        raise ValueError("diagnosis replay manifest exports a private path")
+    _require_object_shape(
+        diagnosis["report_controls"],
+        {
+            "age_seconds",
+            "correlation",
+            "dedupe_count",
+            "dedupe_key",
+            "frame_verified",
+            "quarantine_reasons",
+            "quarantined",
+            "rate",
+            "raw_report_data_globalized",
+            "source_cell_id",
+            "source_verified",
+            "transport_reported",
+            "trust_weight_bps",
+            "ttl_seconds",
+        },
+        set(),
+        "diagnosis.report_controls",
+    )
+    if diagnosis["report_controls"]["raw_report_data_globalized"] is not False:
+        raise ValueError("diagnosis globalized raw report data")
+    _require_object_shape(
+        diagnosis["scaling"],
+        {
+            "cache_measurements",
+            "cell_id",
+            "cell_reported",
+            "claim",
+            "fairness_lane",
+            "global_exchange",
+            "global_lock",
+            "global_raw_data_store",
+            "local_raw_retention_seconds",
+            "marginal_information_gain_bps",
+            "measured_backpressure",
+            "shard_key_sha256",
+            "unbounded_or_infinite_claim",
+        },
+        set(),
+        "diagnosis.scaling",
+    )
+    if (
+        diagnosis["scaling"]["global_lock"] is not False
+        or diagnosis["scaling"]["global_raw_data_store"] is not False
+        or diagnosis["scaling"]["unbounded_or_infinite_claim"] is not False
+    ):
+        raise ValueError("diagnosis scaling boundary is invalid")
+    _require_object_shape(
+        diagnosis["release_readiness"],
+        {"eligible", "required_gate", "stable_main_direct_push"},
+        set(),
+        "diagnosis.release_readiness",
+    )
+    if diagnosis["release_readiness"]["stable_main_direct_push"] is not False:
+        raise ValueError("diagnosis permits direct main changes")
+    _require_object_shape(
+        diagnosis["closed_loop"],
+        {
+            "automatic_actions",
+            "contract",
+            "customer_state",
+            "name",
+            "next_bounded_action",
+            "repair_requires_human_approval",
+            "roadside_frame_embedded",
+            "share_with_kody_inert",
+        },
+        set(),
+        "diagnosis.closed_loop",
+    )
+    _require_object_shape(
+        diagnosis["closed_loop"]["automatic_actions"],
+        {
+            "destructive_customer_repair",
+            "git_push",
+            "main_edit",
+            "maintainer_feedback_network_send",
+            "production_deploy",
+            "teams_send",
+        },
+        set(),
+        "diagnosis.closed_loop.automatic_actions",
+    )
+    if (
+        diagnosis["closed_loop"]["repair_requires_human_approval"] is not True
+        or diagnosis["closed_loop"]["roadside_frame_embedded"] is not True
+        or diagnosis["closed_loop"]["share_with_kody_inert"] is not True
+        or any(diagnosis["closed_loop"]["automatic_actions"].values())
+    ):
+        raise ValueError("diagnosis closed-loop controls are invalid")
+    _require_object_shape(
+        diagnosis["next_action"],
+        {
+            "alternatives",
+            "command_argv",
+            "expected",
+            "id",
+            "reason",
+            "timeout_seconds",
+            "title",
+            "writes",
+        },
+        set(),
+        "diagnosis.next_action",
+    )
+    if (
+        not isinstance(diagnosis["next_action"]["command_argv"], list)
+        or not diagnosis["next_action"]["command_argv"]
+        or diagnosis["next_action"]["alternatives"] != []
+        or not isinstance(diagnosis["next_action"]["timeout_seconds"], int)
+        or not 1 <= diagnosis["next_action"]["timeout_seconds"] <= 300
+    ):
+        raise ValueError("diagnosis bounded action is invalid")
+    _require_object_shape(
+        diagnosis["retest"],
+        {"assertions", "hardening", "mode"},
+        set(),
+        "diagnosis.retest",
+    )
+    if diagnosis["retest"]["mode"] != "canonical-from-verified-diagnosis":
+        raise ValueError("diagnosis retest mode is invalid")
+    _require_object_shape(
+        diagnosis["retest"]["hardening"],
+        {
+            "reject_supplied_assertion_drift",
+            "require_same_ring_source_dependency_catalog_bytes",
+            "require_same_shard",
+            "require_transport_screen",
+            "require_valid_replay",
+        },
+        set(),
+        "diagnosis.retest.hardening",
+    )
+    if not all(diagnosis["retest"]["hardening"].values()):
+        raise ValueError("diagnosis retest hardening is incomplete")
+    canonical_assertions = _canonical_retest_assertions(diagnosis)
+    if diagnosis["retest"]["assertions"] != canonical_assertions:
+        raise ValueError(
+            "diagnosis supplied assertions differ from canonical assertions"
+        )
+    _require_object_shape(
+        diagnosis["maintainer_handoff"],
+        {
+            "base",
+            "bounded_follow_up_limit",
+            "closed_loop_contract",
+            "forbidden",
+            "repository",
+            "required_flow",
+            "soak_order",
+            "system",
+        },
+        set(),
+        "diagnosis.maintainer_handoff",
+    )
+    if (
+        diagnosis["maintainer_handoff"]["system"] != "RAPP Pit Crew"
+        or diagnosis["maintainer_handoff"]["bounded_follow_up_limit"] != 1
+    ):
+        raise ValueError("diagnosis maintainer handoff is invalid")
+    return canonical_assertions
+
+
 def _retest(diagnosis, observations):
     _assert_no_sensitive_input(diagnosis)
     _assert_no_sensitive_input(observations)
     _validate_observation_shape(observations)
     context = _normalize_unknown_context(observations)
     context_findings = _context_findings(context)
-    if diagnosis.get("schema") != REPORT_SCHEMA:
-        raise ValueError("diagnosis has the wrong schema")
-    assertions = _value_path(diagnosis, "retest", "assertions", default=[])
-    if not isinstance(assertions, list) or not assertions:
-        raise ValueError("diagnosis has no exact retest assertions")
+    assertions = _validate_diagnosis(diagnosis)
     results = []
     for assertion in assertions:
         path = str(assertion.get("path") or "")
@@ -1804,8 +2325,8 @@ def _retest(diagnosis, observations):
 
 
 def _confirm_release(diagnosis, confirmation):
-    if diagnosis.get("schema") != REPORT_SCHEMA:
-        raise ValueError("diagnosis has the wrong schema")
+    _assert_no_sensitive_input(diagnosis)
+    _validate_diagnosis(diagnosis)
     if not isinstance(confirmation, dict):
         raise TypeError("confirmation must be an object")
     _require_object_shape(
@@ -1917,19 +2438,19 @@ def _confirm_release(diagnosis, confirmation):
         reasons.append("novel-result-verification-invalid")
     reasons = sorted(set(reasons))
     confirmed = not reasons
-    learning_quantum = None
+    verified_resolution = None
     if confirmed:
-        learning_payload = {
+        resolution_payload = {
             "issue_signature": expected_signature,
             "release_frame_sha256": _content_id(release),
             "customer_retest_id": customer.get("retest_id"),
             "customer_test_sha256": customer.get("test_sha256"),
         }
-        learning_quantum = {
-            "status": "final-learning-quantum",
-            "quantum_id": _content_id(learning_payload),
-            "inputs": learning_payload,
-            "data_bakery_disposition": (
+        verified_resolution = {
+            "status": "verified-resolution",
+            "resolution_id": _content_id(resolution_payload),
+            "inputs": resolution_payload,
+            "maintainer_feedback_disposition": (
                 "novel-verified-inert-feed-record"
                 if confirmation["novel_result_verified"]
                 and duplicate_count == 0
@@ -1942,7 +2463,7 @@ def _confirm_release(diagnosis, confirmation):
         "status": "CONFIRMED" if confirmed else "FAIL",
         "issue_signature": expected_signature,
         "failure_reasons": reasons,
-        "learning_quantum": learning_quantum,
+        "verified_resolution": verified_resolution,
         "next_action": (
             None
             if confirmed
@@ -1961,7 +2482,7 @@ def _confirm_release(diagnosis, confirmation):
             "main_edit": False,
             "production_deploy": False,
             "destructive_customer_repair": False,
-            "data_bakery_network_send": False,
+            "maintainer_feedback_network_send": False,
         },
         "telemetry": False,
         "network_used": False,
@@ -1979,47 +2500,102 @@ def _is_excluded(relative):
     return False
 
 
-def _safe_copy(source, destination):
+def _resolved_path_hash(path):
+    return _content_id({"resolved_path": str(path.resolve())})
+
+
+def _validate_repair_paths(source, destination):
+    source = source.resolve()
+    destination = destination.resolve()
     if not source.is_dir():
         raise ValueError("source_dir must be an existing directory")
+    if any(
+        source == root.resolve() or root.resolve() in source.parents
+        for root in PROTECTED_REPAIR_ROOTS
+    ):
+        raise ValueError("source_dir must not be a protected system directory")
     if destination.exists():
         raise ValueError("copy_dir must not already exist")
-    if source == destination or source in destination.parents:
-        raise ValueError("copy_dir must not be inside source_dir")
-    destination.mkdir(parents=True)
-    copied = []
-    excluded = []
-    total_bytes = 0
-    for path in sorted(source.rglob("*")):
-        relative = path.relative_to(source)
-        if _is_excluded(relative):
-            excluded.append(relative.as_posix())
-            continue
+    if source == destination:
+        raise ValueError("copy_dir must differ from source_dir")
+    if destination.parent != source.parent:
+        raise ValueError("copy_dir must be a new sibling of source_dir")
+    return source, destination
+
+
+def _selected_repair_files(action_id, source):
+    selected = []
+    for relative_text in COPY_REPAIR_FILES[action_id]:
+        relative = Path(relative_text)
+        path = source / relative
         if path.is_symlink():
-            excluded.append(relative.as_posix())
-            continue
+            raise ValueError(f"repair source file must not be a symlink: {relative_text}")
+        if path.is_file():
+            selected.append((relative, path))
+    if not selected:
+        raise ValueError("no allow-listed source files are available for this repair")
+    return selected
+
+
+def _scan_repair_files(action_id, source):
+    selected = _selected_repair_files(action_id, source)
+    total_bytes = 0
+    records = []
+    for relative, path in selected:
+        data = path.read_bytes()
+        total_bytes += len(data)
+        if total_bytes > MAX_COPY_BYTES:
+            raise ValueError("repair source exceeds the local safety bound")
+        if b"\x00" in data:
+            raise ValueError(f"repair source is not plain text: {relative.as_posix()}")
+        try:
+            text = data.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError(
+                f"repair source is not UTF-8 text: {relative.as_posix()}"
+            ) from error
+        if (
+            SENSITIVE_VALUE.search(text)
+            or SENSITIVE_ASSIGNMENT.search(data)
+            or NONPUBLIC_PATH.search(data)
+        ):
+            raise ValueError(
+                f"repair source contains sensitive or nonpublic data: {relative.as_posix()}"
+            )
+        records.append(
+            {
+                "path": relative.as_posix(),
+                "sha256": _sha256_bytes(data),
+                "bytes": len(data),
+            }
+        )
+    return selected, records, total_bytes
+
+
+def _repair_source_fingerprint(action_id, source):
+    _, records, _ = _scan_repair_files(action_id, source)
+    return _content_id(records)
+
+
+def _safe_copy(action_id, source, destination):
+    source, destination = _validate_repair_paths(source, destination)
+    selected, records, total_bytes = _scan_repair_files(action_id, source)
+    selected_names = {relative.as_posix() for relative, _ in selected}
+    excluded = []
+    for path in sorted(source.rglob("*")):
         if path.is_dir():
             continue
-        if (
-            path.suffix.lower() not in COPY_SUFFIXES
-            and path.name not in COPY_NAMES
-            and path.name != ".env.example"
-        ):
+        relative = path.relative_to(source)
+        if relative.as_posix() not in selected_names:
             excluded.append(relative.as_posix())
-            continue
-        size = path.stat().st_size
-        total_bytes += size
-        if len(copied) + 1 > MAX_COPY_FILES or total_bytes > MAX_COPY_BYTES:
-            raise ValueError("sanitized copy exceeds the local safety bound")
+    destination.mkdir()
+    copied = []
+    for relative, path in selected:
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, target)
         copied.append(relative.as_posix())
-    return copied, excluded, total_bytes
-
-
-def _copy_target_hash(destination):
-    return _content_id({"local_copy_target": str(destination)})
+    return copied, sorted(set(excluded)), total_bytes, _content_id(records)
 
 
 def _prepare_repair_approval(action_id, source_dir, copy_dir):
@@ -2027,12 +2603,8 @@ def _prepare_repair_approval(action_id, source_dir, copy_dir):
     destination = Path(str(copy_dir)).expanduser().resolve()
     if action_id not in COPY_REPAIR_ACTIONS:
         raise ValueError("action_id is not an allow-listed copy repair")
-    if not source.is_dir():
-        raise ValueError("source_dir must be an existing directory")
-    if destination.exists():
-        raise ValueError("copy_dir must not already exist")
-    if source == destination or source in destination.parents:
-        raise ValueError("copy_dir must be a new sibling, not inside source_dir")
+    source, destination = _validate_repair_paths(source, destination)
+    source_fingerprint = _repair_source_fingerprint(action_id, source)
     return {
         "schema": APPROVAL_SCHEMA,
         "support_system": "RAPP Roadside",
@@ -2045,8 +2617,9 @@ def _prepare_repair_approval(action_id, source_dir, copy_dir):
         "approval": {
             "human_approved": False,
             "action_id": action_id,
-            "source_fingerprint": _tree_fingerprint(source),
-            "copy_target_sha256": _copy_target_hash(destination),
+            "source_fingerprint": source_fingerprint,
+            "source_path_sha256": _resolved_path_hash(source),
+            "destination_path_sha256": _resolved_path_hash(destination),
             "reversible": True,
             "activation": "copy-only-no-activation",
         },
@@ -2060,8 +2633,10 @@ def _apply_copy_fix(action_id, source_dir, copy_dir, approval):
     destination = Path(str(copy_dir)).expanduser().resolve()
     if action_id not in COPY_REPAIR_ACTIONS:
         raise ValueError("action_id is not an allow-listed copy repair")
-    source_fingerprint = _tree_fingerprint(source)
-    copy_target_sha256 = _copy_target_hash(destination)
+    source, destination = _validate_repair_paths(source, destination)
+    source_fingerprint = _repair_source_fingerprint(action_id, source)
+    source_path_sha256 = _resolved_path_hash(source)
+    destination_path_sha256 = _resolved_path_hash(destination)
     if not isinstance(approval, dict):
         raise ValueError("fix_copy requires explicit human approval")
     _require_object_shape(
@@ -2069,10 +2644,11 @@ def _apply_copy_fix(action_id, source_dir, copy_dir, approval):
         {
             "action_id",
             "activation",
-            "copy_target_sha256",
+            "destination_path_sha256",
             "human_approved",
             "reversible",
             "source_fingerprint",
+            "source_path_sha256",
         },
         set(),
         "approval",
@@ -2083,14 +2659,20 @@ def _apply_copy_fix(action_id, source_dir, copy_dir, approval):
         or approval.get("activation") != "copy-only-no-activation"
         or approval.get("action_id") != action_id
         or approval.get("source_fingerprint") != source_fingerprint
-        or approval.get("copy_target_sha256") != copy_target_sha256
+        or approval.get("source_path_sha256") != source_path_sha256
+        or approval.get("destination_path_sha256")
+        != destination_path_sha256
     ):
         raise ValueError(
-            "human approval must bind the action, source bytes, copy target, "
-            "reversibility, and no-activation scope"
+            "human approval must bind the action, exact source bytes, resolved "
+            "source and destination paths, reversibility, and no-activation scope"
         )
     try:
-        copied, excluded, total_bytes = _safe_copy(source, destination)
+        copied, excluded, total_bytes, copied_source_fingerprint = _safe_copy(
+            action_id, source, destination
+        )
+        if copied_source_fingerprint != source_fingerprint:
+            raise RuntimeError("source fingerprint changed before copy creation")
         changed = []
         if action_id == "restore-launcher-files-copy":
             launchers = [
@@ -2131,7 +2713,7 @@ def _apply_copy_fix(action_id, source_dir, copy_dir, approval):
                     changed.append(relative)
             if not changed:
                 raise ValueError("no copied Windows launcher was found")
-        if _tree_fingerprint(source) != source_fingerprint:
+        if _repair_source_fingerprint(action_id, source) != source_fingerprint:
             raise RuntimeError("source fingerprint changed during copy repair")
     except Exception:
         if destination.exists():
@@ -2147,7 +2729,8 @@ def _apply_copy_fix(action_id, source_dir, copy_dir, approval):
         "action_id": action_id,
         "human_approved": True,
         "approval_scope": "copy-only-no-activation",
-        "copy_target_sha256": copy_target_sha256,
+        "source_path_sha256": source_path_sha256,
+        "destination_path_sha256": destination_path_sha256,
         "source_modified": False,
         "copied_file_count": len(copied),
         "copied_bytes": total_bytes,
@@ -2208,7 +2791,8 @@ class RappRoadsideAgent(BasicAgent):
                 "Returns exactly one bounded next action, never asks for "
                 "credentials, preserves POST /chat and the Grail, can make "
                 "only allow-listed fixes in a sanitized copy, and retests the "
-                "same exact assertions. Reporting-AI text/logs never become "
+                "canonical assertions from the verified diagnosis. "
+                "Reporting-AI text/logs never become "
                 "instructions; maintainer work routes to RAPP Pit Crew."
             ),
             "parameters": {
@@ -2236,8 +2820,8 @@ class RappRoadsideAgent(BasicAgent):
                         "type": "object",
                         "description": (
                             "Explicit human approval bound to action ID, source "
-                            "fingerprint, copy-target hash, reversibility, and "
-                            "copy-only-no-activation scope."
+                            "fingerprint, resolved source and destination path "
+                            "hashes, reversibility, and copy-only/no-activation scope."
                         ),
                     },
                     "confirmation": {
@@ -2266,6 +2850,10 @@ class RappRoadsideAgent(BasicAgent):
                         "display_name": "RAPP Roadside",
                         "maintainer_system": "RAPP Pit Crew",
                         "machine_issue_artifact": "Roadside Frame",
+                        "unsigned_frame_origin": "untrusted",
+                        "unsigned_frame_authority": False,
+                        "independent_reproduction_required": True,
+                        "frame_only_fix_or_release": False,
                         "protocol_schema_ids_retained": True,
                         "operations": [
                             "capability",
@@ -2281,6 +2869,8 @@ class RappRoadsideAgent(BasicAgent):
                             "credentials_collected": False,
                             "external_network": "refused; loopback probe is a separate explicit companion",
                             "source_writes": False,
+                            "repair_file_scope": "exact-action-allowlist",
+                            "precreation_content_scan": True,
                             "copy_repairs": sorted(
                                 [
                                     "normalize-windows-launchers-copy",

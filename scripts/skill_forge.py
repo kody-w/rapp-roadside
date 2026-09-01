@@ -26,6 +26,7 @@ REQUIRED = [
     "scripts/quarantine_report.py",
     "scripts/public_audit.py",
     "scripts/rar_lifecycle.py",
+    "scripts/write_handoff.py",
     "scripts/test_fresh_clone.py",
     "rapp/agent.lock.json",
     "rapp/package.lock.json",
@@ -241,7 +242,7 @@ def main(argv=None):
         "one bounded next action",
         "Never ask for, accept, print, copy",
         "POST /chat",
-        "isolated feature/fix worktree",
+        "isolated feature/fix checkout",
         "Never push directly to main",
         "Parent RAR review owns publication",
         "RAPP Roadside",
@@ -483,7 +484,7 @@ def main(argv=None):
                     "prev_wave",
                     "sig",
                 }
-                and len(frame.get("payload", {})) == 13
+                and len(frame.get("payload", {})) == 15
                 and frame.get("payload", {}).get("candidate") == "rapp-roadside",
                 "roadside-frame-exact-rev-13-shape",
                 failures,
@@ -516,11 +517,21 @@ def main(argv=None):
                 env={"PYTHONDONTWRITEBYTECODE": "1"},
             )
             try:
-                extracted_frame = json.loads(extracted.stdout)
+                extracted_result = json.loads(extracted.stdout)
             except json.JSONDecodeError:
-                extracted_frame = {}
+                extracted_result = {}
             _check(
-                extracted.returncode == 0 and extracted_frame == frame,
+                extracted.returncode == 0
+                and extracted_result.get("frame") == frame
+                and extracted_result.get("origin_status")
+                == "untrusted-unsigned"
+                and extracted_result.get("authority_status") == "none"
+                and extracted_result.get(
+                    "independent_reproduction_required"
+                )
+                is True
+                and extracted_result.get("fix_or_release_authorized")
+                is False,
                 "inert-share-embedded-frame",
                 failures,
                 passes,
@@ -579,7 +590,7 @@ def main(argv=None):
                         "automatic_main_edit",
                         "automatic_production_deploy",
                         "destructive_customer_repair",
-                        "automatic_data_bakery_network_send",
+                        "automatic_maintainer_feedback_network_send",
                     )
                 ),
                 "closed-loop-mutation-matrix",

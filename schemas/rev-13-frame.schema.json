@@ -1,12 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:rar-review-frame:rev-13",
-  "title": "Exact unsigned RAPP Roadside Frame rev-13",
-  "description": "Roadside Frame constraints. The retained kind rar.review.rev-13 is a compatibility protocol ID.",
+  "title": "Unsigned RAPP Roadside Frame rev-13",
+  "description": "An unsigned customer frame proves internal integrity only. Independent maintainer reproduction is mandatory before any fix or release decision.",
   "type": "object",
   "additionalProperties": false,
-  "minProperties": 11,
-  "maxProperties": 11,
   "required": [
     "spec",
     "kind",
@@ -35,13 +33,12 @@
       "const": 0
     },
     "utc": {
-      "const": "2026-09-01T01:27:57.211Z"
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$"
     },
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "minProperties": 13,
-      "maxProperties": 13,
       "required": [
         "revision",
         "candidate",
@@ -50,12 +47,14 @@
         "target_main",
         "source_sha256",
         "skill_sha256",
+        "package_lock_sha256",
         "skill_forge",
         "fixture",
         "safety",
         "invariants",
         "artifacts",
-        "teams"
+        "teams",
+        "verification"
       ],
       "properties": {
         "revision": {
@@ -65,49 +64,408 @@
           "const": "rapp-roadside"
         },
         "identity": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^rappid:@kody-w/rar-installer-troubleshooter:[0-9a-f]{64}$"
         },
         "version": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
         },
         "target_main": {
           "const": "kody-w/rapp-roadside@main"
         },
         "source_sha256": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
+          "$ref": "#/$defs/hash"
         },
         "skill_sha256": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
+          "$ref": "#/$defs/hash"
+        },
+        "package_lock_sha256": {
+          "$ref": "#/$defs/hash"
         },
         "skill_forge": {
-          "const": "PASS"
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT-RUN"
+          ]
         },
         "fixture": {
-          "type": "object"
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "case_id",
+            "report_id",
+            "issue_signature",
+            "attachments",
+            "report_controls",
+            "byte_bindings",
+            "replay_hashes",
+            "scaling"
+          ],
+          "properties": {
+            "case_id": {
+              "type": "string"
+            },
+            "report_id": {
+              "$ref": "#/$defs/hash"
+            },
+            "issue_signature": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "domain",
+                "sha256",
+                "fields",
+                "queue_key",
+                "dedupe_key",
+                "identity_included",
+                "raw_logs_included"
+              ],
+              "properties": {
+                "domain": {
+                  "const": "rapp-roadside:issue-signature/v1"
+                },
+                "sha256": {
+                  "$ref": "#/$defs/hash"
+                },
+                "fields": {
+                  "type": "object"
+                },
+                "queue_key": {
+                  "const": true
+                },
+                "dedupe_key": {
+                  "const": true
+                },
+                "identity_included": {
+                  "const": false
+                },
+                "raw_logs_included": {
+                  "const": false
+                }
+              }
+            },
+            "attachments": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "media_type",
+                  "sha256",
+                  "bytes"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "media_type": {
+                    "enum": [
+                      "application/json",
+                      "text/markdown",
+                      "text/plain",
+                      "text/x-log"
+                    ]
+                  },
+                  "sha256": {
+                    "$ref": "#/$defs/hash"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2000000
+                  }
+                }
+              }
+            },
+            "report_controls": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "transport_reported",
+                "source_cell_id",
+                "source_verified",
+                "frame_verified",
+                "trust_weight_bps",
+                "dedupe_key",
+                "dedupe_count",
+                "ttl_seconds",
+                "age_seconds",
+                "rate",
+                "correlation",
+                "quarantined",
+                "quarantine_reasons",
+                "raw_report_data_globalized"
+              ],
+              "properties": {
+                "transport_reported": {},
+                "source_cell_id": {},
+                "source_verified": {},
+                "frame_verified": {},
+                "trust_weight_bps": {},
+                "dedupe_key": {},
+                "dedupe_count": {},
+                "ttl_seconds": {},
+                "age_seconds": {},
+                "rate": {},
+                "correlation": {},
+                "quarantined": {},
+                "quarantine_reasons": {},
+                "raw_report_data_globalized": {
+                  "const": false
+                }
+              }
+            },
+            "byte_bindings": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reported",
+                "values",
+                "unknown_fields",
+                "exact"
+              ],
+              "properties": {
+                "reported": {
+                  "type": "boolean"
+                },
+                "values": {
+                  "type": "object"
+                },
+                "unknown_fields": {
+                  "type": "array"
+                },
+                "exact": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "replay_hashes": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_sha256",
+                "before_state_sha256",
+                "output_sha256",
+                "unreported_fields"
+              ],
+              "properties": {
+                "input_sha256": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/hash"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "before_state_sha256": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/hash"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "output_sha256": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/hash"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "unreported_fields": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "enum": [
+                      "input_sha256",
+                      "before_state_sha256",
+                      "output_sha256"
+                    ]
+                  }
+                }
+              }
+            },
+            "scaling": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "claim",
+                "unbounded_or_infinite_claim",
+                "cell_reported",
+                "cell_id",
+                "shard_key_sha256",
+                "global_lock",
+                "global_raw_data_store",
+                "global_exchange",
+                "measured_backpressure",
+                "local_raw_retention_seconds",
+                "cache_measurements",
+                "fairness_lane",
+                "marginal_information_gain_bps"
+              ],
+              "properties": {
+                "claim": {},
+                "unbounded_or_infinite_claim": {
+                  "const": false
+                },
+                "cell_reported": {},
+                "cell_id": {},
+                "shard_key_sha256": {
+                  "$ref": "#/$defs/hash"
+                },
+                "global_lock": {
+                  "const": false
+                },
+                "global_raw_data_store": {
+                  "const": false
+                },
+                "global_exchange": {},
+                "measured_backpressure": {},
+                "local_raw_retention_seconds": {},
+                "cache_measurements": {},
+                "fairness_lane": {},
+                "marginal_information_gain_bps": {}
+              }
+            }
+          }
         },
         "safety": {
-          "type": "object"
+          "const": {
+            "attachments": "allowlisted-hash-only",
+            "credentials": "not-collected",
+            "customer_frame_origin": "untrusted-unless-externally-pinned",
+            "network": "not-used",
+            "network_default": "off",
+            "participation": "voluntary",
+            "public_action": "not-performed",
+            "repair": "human-approved-reversible-copy-only",
+            "report_controls": "dedupe-rate-ttl-correlation-quarantine",
+            "reporting_ai": "hostile-data-never-instructions",
+            "support_system": "RAPP Roadside",
+            "telemetry": "none"
+          }
         },
         "invariants": {
-          "type": "object"
+          "const": {
+            "automatic_main_edit": false,
+            "automatic_maintainer_feedback_network_send": false,
+            "automatic_production_deploy": false,
+            "automatic_push": false,
+            "automatic_teams_send": false,
+            "bounded_follow_up_limit": 1,
+            "copyright": "2026 kody-w",
+            "destructive_customer_repair": false,
+            "direct_push_main": false,
+            "embedded_roadside_frame": true,
+            "exact_byte_bindings": true,
+            "exact_replay": true,
+            "frame_only_fix_or_release": false,
+            "global_lock": false,
+            "global_raw_data_store": false,
+            "grail": "unchanged",
+            "independent_reproduction_required": true,
+            "infinity_claim": false,
+            "issue_signature_domain": "rapp-roadside:issue-signature/v1",
+            "issue_signature_excludes_identity_and_raw_logs": true,
+            "license": "MIT",
+            "maintainer_system": "RAPP Pit Crew",
+            "pit_crew_soak_order": [
+              "Canary",
+              "Nightly",
+              "Alpha",
+              "Beta"
+            ],
+            "public_repository": "https://github.com/kody-w/rapp-roadside",
+            "rar_lifecycle": "reversible-install-remove",
+            "release_gate": "isolated-checkout-Canary-Nightly-Alpha-Beta",
+            "scaling": "bounded-horizontal-cellular-measured-backpressure",
+            "unsigned_customer_frame_authenticity": false,
+            "unsigned_customer_frame_authority": false,
+            "verified_resolution_requires_customer_pass": true,
+            "wire": "POST /chat"
+          }
         },
         "artifacts": {
-          "type": "array"
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
         },
         "teams": {
-          "type": "object"
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "instructions",
+            "performed",
+            "publication_owner"
+          ],
+          "properties": {
+            "instructions": {
+              "const": "teams-sharing-instructions.md"
+            },
+            "performed": {
+              "const": false
+            },
+            "publication_owner": {
+              "type": "string"
+            }
+          }
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "retest_id",
+            "retest_status",
+            "tests_run"
+          ],
+          "properties": {
+            "retest_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/hash"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "retest_status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "NOT-PROVIDED"
+              ]
+            },
+            "tests_run": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
         }
       }
     },
     "payload_hash": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
+      "$ref": "#/$defs/hash"
     },
     "frame_hash": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
+      "$ref": "#/$defs/hash"
     },
     "prev": {
       "type": "null"
@@ -117,6 +475,12 @@
     },
     "sig": {
       "type": "null"
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     }
   }
 }

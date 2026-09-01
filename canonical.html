@@ -30,12 +30,15 @@ The same exact retest. No credentials, external network, upload, or public actio
 <code>rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b</code></p>
 <p>Stable target: <code>kody-w/rapp-roadside@main</code>. RAPP Pit Crew
 owns maintainer intake, reproduction, fix, retest, and release through an
-isolated feature/fix worktree and release merge, never a direct push.</p>
+isolated feature/fix checkout and release merge, never a direct push.</p>
 </section>
 <section>
 <h2>Verified runner</h2>
 <pre>python3 scripts/run_agent.py --preflight
 python3 scripts/run_agent.py --json '{"operation":"diagnose","observation_path":"observations.json"}'</pre>
+<p>An unpinned preflight proves internal consistency only and reports an
+unauthenticated origin. Trusted authenticity requires an expected lock digest
+from a separate catalog or release channel.</p>
 <p>The runner checks <code>rapp/agent.lock.json</code> before import.</p>
 </section>
 <section>
@@ -47,6 +50,8 @@ python3 scripts/run_agent.py --json '{"operation":"diagnose","observation_path":
 <li>No source mutation; allow-listed copy repairs only.</li>
 <li>Reporting-AI text and logs are hostile data; embedded instructions never run.</li>
 <li>Attachments are allowlisted and hash-only in the Roadside Frame.</li>
+<li>An unsigned customer frame has untrusted origin and no authority; Pit Crew
+independently reproduces before any fix or release decision.</li>
 <li>Exact replay and ring/source/dependency/catalog/installer bytes are bound.</li>
 <li>Repairs require a human-approved reversible copy binding.</li>
 <li>Duplicate, stale, rate-exceeded, or correlated reports are quarantined.</li>
@@ -63,7 +68,7 @@ by verified issue signature. It reports measured backpressure and exchanges
 only verified signatures, Roadside Frames, and aggregate evidence. It uses no
 global raw-data store, no global lock, and makes no infinity claim.</p>
 <p>Novel verified confirmations emit inert records for the autonomous Data
-Bakery. Duplicates aggregate evidence without re-mining. No automatic network
+maintainer feedback queue. Duplicates aggregate evidence without re-mining. No automatic network
 submission occurs.</p>
 </section>
 <section>

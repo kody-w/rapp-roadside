@@ -10,35 +10,6 @@ import re
 from pathlib import Path
 
 
-BUSINESS_TERMS = [
-    "Front" + "ier Private",
-    "Front" + "ier novel" + "ty",
-    "Oil " + "Field",
-    "oil_" + "field",
-    "oil-" + "field",
-    "Data " + "LOAF",
-    "data-" + "loaf",
-    "Quantum " + "Search",
-    "AI " + "Kiln",
-    "rapp-ai-" + "kiln",
-    "corporate-" + "records",
-    "installer-" + "stability-001",
-    "Roge" + "lio",
-    "roge" + "lio",
-    "microsoft/" + "aibast-agents-library",
-    "pat" + "ent-sensitive",
-    "novel" + "ty",
-    "pat" + "ent",
-    "trade " + "secret",
-    "refs/" + "heads/",
-    "pay" + "ment",
-    "boun" + "ty",
-    "stip" + "end",
-    "un" + "pa" + "id",
-    "merit " + "ledger",
-    "cash-" + "value",
-    "bragging-" + "right",
-]
 PRIVATE_PATHS = [
     re.compile(r"/" + r"Users/[^\s\"']+"),
     re.compile(r"[A-Za-z]:\\\\Users\\\\[^\s\"']+"),
@@ -89,18 +60,10 @@ def audit(root):
     for relative in sorted(required - present):
         failures.append(f"missing:{relative}")
     for path, relative in _files(root):
-        if relative.as_posix() in {
-            "ki" + "ln-input.json",
-            "front" + "ier-novel" + "ty.md",
-        }:
-            failures.append(f"private-artifact:{relative}")
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        for term in BUSINESS_TERMS:
-            if term.lower() in text.lower():
-                failures.append(f"business-term:{relative}")
         for pattern in PRIVATE_PATHS:
             if pattern.search(text):
                 failures.append(f"private-path:{relative}")

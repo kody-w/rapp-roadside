@@ -8,7 +8,8 @@
     "human_approved",
     "action_id",
     "source_fingerprint",
-    "copy_target_sha256",
+    "source_path_sha256",
+    "destination_path_sha256",
     "reversible",
     "activation"
   ],
@@ -23,7 +24,11 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
-    "copy_target_sha256": {
+    "source_path_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "destination_path_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },

@@ -1,6 +1,6 @@
 {
-  "automatic_data_bakery_network_send": false,
   "automatic_main_edit": false,
+  "automatic_maintainer_feedback_network_send": false,
   "automatic_production_deploy": false,
   "automatic_push": false,
   "automatic_teams_send": false,
@@ -65,7 +65,7 @@
       "actual_status": "CONFIRMED",
       "expected_reason": null,
       "expected_status": "CONFIRMED",
-      "mutation": "confirmed-learning-quantum",
+      "mutation": "confirmed-verified-resolution",
       "passed": true
     }
   ],

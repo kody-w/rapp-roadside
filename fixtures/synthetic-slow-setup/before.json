@@ -1,6 +1,7 @@
 {
   "case_id": "synthetic-slow-setup",
   "failure_code": "slow-first-boot",
+  "probe_mode": "direct",
   "platform": "windows",
   "setup_elapsed_seconds": 95,
   "setup_stage": "agent-dependency-install",
@@ -65,7 +66,8 @@
       "install.cmd": "4066d161da3adcee4c0963094bc937448d45589a0b864bfe0cd3b124a06f5ba3",
       "install.ps1": "17514fcc407397cfa7434fa6e9095fcdbc89be66ddc9652f1de003f4dec70b3b",
       "install.sh": "6ecf06f6dbbab6a920b5b208bc7c4069ca266b150d6c00533a00b5975a8417ca"
-    }
+    },
+    "unreported_fields": []
   },
   "reporting_ai": {
     "text_present": true,

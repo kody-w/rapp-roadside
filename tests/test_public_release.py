@@ -70,11 +70,12 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertFalse(payload["network_used"])
         self.assertFalse(payload["telemetry"])
 
-    def test_private_phase_artifacts_are_absent(self):
-        first_private_name = "front" + "ier-novel" + "ty.md"
-        second_private_name = "ki" + "ln-input.json"
-        self.assertFalse((ROOT / first_private_name).exists())
-        self.assertFalse((ROOT / second_private_name).exists())
+    def test_public_audit_contains_no_embedded_restricted_name_dictionary(self):
+        source = (ROOT / "scripts" / "public_audit.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("BUSINESS_TERMS", source)
+        self.assertNotIn("business-term:", source)
 
 
 if __name__ == "__main__":

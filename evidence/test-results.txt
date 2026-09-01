@@ -1,8 +1,11 @@
+test_copy_in_different_parent_is_refused (test_agent.CopyRepairTests.test_copy_in_different_parent_is_refused) ... ok
 test_copy_inside_source_is_refused (test_agent.CopyRepairTests.test_copy_inside_source_is_refused) ... ok
 test_copy_repair_requires_bound_human_approval (test_agent.CopyRepairTests.test_copy_repair_requires_bound_human_approval) ... ok
 test_executable_fix_changes_copy_not_source (test_agent.CopyRepairTests.test_executable_fix_changes_copy_not_source) ... ok
 test_mirror_fix_is_byte_exact_in_copy (test_agent.CopyRepairTests.test_mirror_fix_is_byte_exact_in_copy) ... ok
 test_prepare_repair_emits_unapproved_exact_binding (test_agent.CopyRepairTests.test_prepare_repair_emits_unapproved_exact_binding) ... ok
+test_protected_var_source_is_refused_before_scan (test_agent.CopyRepairTests.test_protected_var_source_is_refused_before_scan) ... ok
+test_sensitive_allowlisted_file_is_refused_before_destination (test_agent.CopyRepairTests.test_sensitive_allowlisted_file_is_refused_before_destination) ... ok
 test_symlink_is_excluded (test_agent.CopyRepairTests.test_symlink_is_excluded) ... ok
 test_unlisted_fix_is_refused (test_agent.CopyRepairTests.test_unlisted_fix_is_refused) ... ok
 test_windows_launcher_normalization_is_crlf_in_copy (test_agent.CopyRepairTests.test_windows_launcher_normalization_is_crlf_in_copy) ... ok
@@ -12,6 +15,7 @@ test_linux_launcher_mode_action (test_agent.DiagnosisTests.test_linux_launcher_m
 test_macos_installer_mirror_action (test_agent.DiagnosisTests.test_macos_installer_mirror_action) ... ok
 test_proven_setup_archives_only_local_evidence (test_agent.DiagnosisTests.test_proven_setup_archives_only_local_evidence) ... ok
 test_retest_fails_without_post_chat_envelope (test_agent.DiagnosisTests.test_retest_fails_without_post_chat_envelope) ... ok
+test_retest_rejects_recomputed_trivial_assertion_tamper (test_agent.DiagnosisTests.test_retest_rejects_recomputed_trivial_assertion_tamper) ... ok
 test_synthetic_exact_retest_passes (test_agent.DiagnosisTests.test_synthetic_exact_retest_passes) ... ok
 test_synthetic_matches_expected_report_when_generated (test_agent.DiagnosisTests.test_synthetic_matches_expected_report_when_generated) ... ok
 test_synthetic_report_is_byte_deterministic (test_agent.DiagnosisTests.test_synthetic_report_is_byte_deterministic) ... ok
@@ -21,7 +25,9 @@ test_canonical_html_is_self_contained (test_agent.PackageTests.test_canonical_ht
 test_canonical_names_and_protocol_ids_coexist (test_agent.PackageTests.test_canonical_names_and_protocol_ids_coexist) ... ok
 test_legacy_agent_class_alias_is_preserved (test_agent.PackageTests.test_legacy_agent_class_alias_is_preserved) ... ok
 test_package_lock_records_are_current (test_agent.PackageTests.test_package_lock_records_are_current) ... ok
+test_runner_preflight_accepts_external_lock_pin (test_agent.PackageTests.test_runner_preflight_accepts_external_lock_pin) ... ok
 test_runner_preflight_verifies_lock (test_agent.PackageTests.test_runner_preflight_verifies_lock) ... ok
+test_tamper_and_relock_never_produces_unpinned_trusted_pass (test_agent.PackageTests.test_tamper_and_relock_never_produces_unpinned_trusted_pass) ... ok
 test_closed_loop_contract_has_exact_customer_order (test_closed_loop.ClosedLoopTests.test_closed_loop_contract_has_exact_customer_order) ... ok
 test_duplicate_confirmation_aggregates_without_remining (test_closed_loop.ClosedLoopTests.test_duplicate_confirmation_aggregates_without_remining) ... ok
 test_failed_customer_confirmation_does_not_learn (test_closed_loop.ClosedLoopTests.test_failed_customer_confirmation_does_not_learn) ... ok
@@ -34,22 +40,30 @@ test_ring_byte_drift_fails_exact_customer_retest (test_closed_loop.ClosedLoopTes
 test_rollback_must_be_available_and_tested (test_closed_loop.ClosedLoopTests.test_rollback_must_be_available_and_tested) ... ok
 test_share_markdown_embeds_exact_verified_roadside_frame (test_closed_loop.ClosedLoopTests.test_share_markdown_embeds_exact_verified_roadside_frame) ... ok
 test_stale_report_is_quarantined (test_closed_loop.ClosedLoopTests.test_stale_report_is_quarantined) ... ok
-test_successful_confirmation_becomes_final_learning_quantum (test_closed_loop.ClosedLoopTests.test_successful_confirmation_becomes_final_learning_quantum) ... ok
+test_successful_confirmation_becomes_verified_resolution (test_closed_loop.ClosedLoopTests.test_successful_confirmation_becomes_verified_resolution) ... ok
 test_unreproducible_state_is_quarantined (test_closed_loop.ClosedLoopTests.test_unreproducible_state_is_quarantined) ... ok
 test_wrong_installer_frame_version_is_quarantined (test_closed_loop.ClosedLoopTests.test_wrong_installer_frame_version_is_quarantined) ... ok
 test_wrong_ring_order_fails_release_confirmation (test_closed_loop.ClosedLoopTests.test_wrong_ring_order_fails_release_confirmation) ... ok
+test_external_frame_pin_authenticates_artifact_but_grants_no_authority (test_frames.RoadsideFrameTests.test_external_frame_pin_authenticates_artifact_but_grants_no_authority) ... ok
+test_recomputed_automatic_push_mutation_is_refused_by_schema (test_frames.RoadsideFrameTests.test_recomputed_automatic_push_mutation_is_refused_by_schema) ... ok
+test_unsigned_frame_reports_untrusted_origin_and_no_authority (test_frames.RoadsideFrameTests.test_unsigned_frame_reports_untrusted_origin_and_no_authority) ... ok
+test_write_handoff_round_trips_one_validated_frame (test_frames.RoadsideFrameTests.test_write_handoff_round_trips_one_validated_frame) ... ok
 test_fresh_install_verify_remove_preserves_removed_bytes (test_lifecycle.ReversibleLifecycleTests.test_fresh_install_verify_remove_preserves_removed_bytes) ... ok
 test_lifecycle_manifest_has_no_network_or_global_lock (test_lifecycle.ReversibleLifecycleTests.test_lifecycle_manifest_has_no_network_or_global_lock) ... ok
 test_prior_managed_version_is_restored_on_remove (test_lifecycle.ReversibleLifecycleTests.test_prior_managed_version_is_restored_on_remove) ... ok
 test_tampered_managed_install_fails_verification (test_lifecycle.ReversibleLifecycleTests.test_tampered_managed_install_fails_verification) ... ok
 test_unmanaged_target_is_never_overwritten (test_lifecycle.ReversibleLifecycleTests.test_unmanaged_target_is_never_overwritten) ... ok
+test_unpinned_package_check_reports_unauthenticated_origin (test_lifecycle.ReversibleLifecycleTests.test_unpinned_package_check_reports_unauthenticated_origin) ... ok
+test_wrong_catalog_digest_blocks_install (test_lifecycle.ReversibleLifecycleTests.test_wrong_catalog_digest_blocks_install) ... ok
 test_chat_request_field_mutation_is_detected (test_mutations.MutationTests.test_chat_request_field_mutation_is_detected) ... ok
 test_credential_like_values_are_refused (test_mutations.MutationTests.test_credential_like_values_are_refused) ... ok
 test_direct_main_mutation_is_blocked (test_mutations.MutationTests.test_direct_main_mutation_is_blocked) ... ok
+test_documented_probe_follow_up_resolves_without_looping (test_mutations.MutationTests.test_documented_probe_follow_up_resolves_without_looping) ... ok
 test_external_network_observation_is_blocked_first (test_mutations.MutationTests.test_external_network_observation_is_blocked_first) ... ok
 test_grail_mutation_is_blocked (test_mutations.MutationTests.test_grail_mutation_is_blocked) ... ok
 test_invalid_platform_is_refused (test_mutations.MutationTests.test_invalid_platform_is_refused) ... ok
 test_local_probe_accepts_plain_http_loopback (test_mutations.MutationTests.test_local_probe_accepts_plain_http_loopback) ... ok
+test_local_probe_does_not_follow_external_redirect (test_mutations.MutationTests.test_local_probe_does_not_follow_external_redirect) ... ok
 test_local_probe_rejects_non_loopback_hosts (test_mutations.MutationTests.test_local_probe_rejects_non_loopback_hosts) ... ok
 test_loopback_url_text_is_allowed (test_mutations.MutationTests.test_loopback_url_text_is_allowed) ... ok
 test_missing_response_key_mutations_are_detected (test_mutations.MutationTests.test_missing_response_key_mutations_are_detected) ... ok
@@ -61,7 +75,7 @@ test_stage_mutation_past_bound_escalates_once (test_mutations.MutationTests.test
 test_cross_agent_instructions_cover_all_hosts (test_public_release.PublicReleaseTests.test_cross_agent_instructions_cover_all_hosts) ... ok
 test_fresh_clone_smoke_passes (test_public_release.PublicReleaseTests.test_fresh_clone_smoke_passes) ... ok
 test_mit_license_and_copyright (test_public_release.PublicReleaseTests.test_mit_license_and_copyright) ... ok
-test_private_phase_artifacts_are_absent (test_public_release.PublicReleaseTests.test_private_phase_artifacts_are_absent) ... ok
+test_public_audit_contains_no_embedded_restricted_name_dictionary (test_public_release.PublicReleaseTests.test_public_audit_contains_no_embedded_restricted_name_dictionary) ... ok
 test_public_content_audit_passes (test_public_release.PublicReleaseTests.test_public_content_audit_passes) ... ok
 test_public_manifest_has_no_telemetry_or_default_network (test_public_release.PublicReleaseTests.test_public_manifest_has_no_telemetry_or_default_network) ... ok
 test_attachment_hasher_binds_real_bytes_and_refuses_types (test_unknown_unknowns.UnknownUnknownHardeningTests.test_attachment_hasher_binds_real_bytes_and_refuses_types) ... ok
@@ -80,6 +94,6 @@ test_reporting_ai_raw_log_instructions_are_never_accepted (test_unknown_unknowns
 test_synthetic_binding_hashes_match_real_fixture_bytes (test_unknown_unknowns.UnknownUnknownHardeningTests.test_synthetic_binding_hashes_match_real_fixture_bytes) ... ok
 
 ----------------------------------------------------------------------
-Ran 80 tests in 2.401s
+Ran 94 tests in 4.315s
 
 OK

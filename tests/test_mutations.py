@@ -2,8 +2,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import shutil
+import subprocess
+import sys
+import threading
 import unittest
 from copy import deepcopy
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 
@@ -181,6 +186,114 @@ class MutationTests(unittest.TestCase):
             "http://127.0.0.1:7071",
             PROBE._loopback_url("http://127.0.0.1:7071"),
         )
+
+    def test_local_probe_does_not_follow_external_redirect(self):
+        class RedirectHandler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(302)
+                self.send_header("Location", "http://192.0.2.1/escape")
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"status":"redirect"}')
+
+            def log_message(self, format, *args):
+                return
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), RedirectHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            status, payload = PROBE._request(
+                "GET",
+                f"http://127.0.0.1:{server.server_port}/health",
+            )
+            self.assertEqual(302, status)
+            self.assertEqual("redirect", payload["status"])
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+    def test_documented_probe_follow_up_resolves_without_looping(self):
+        work = ROOT / "tests" / ".work-probe"
+        if work.exists():
+            shutil.rmtree(work)
+        (work / "scripts").mkdir(parents=True)
+        shutil.copy2(
+            ROOT / "scripts" / "local_probe.py",
+            work / "scripts" / "local_probe.py",
+        )
+        (work / "brainstem.py").write_text("# local fixture\n", encoding="utf-8")
+        (work / "start.sh").write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        work.joinpath("start.sh").chmod(0o755)
+        try:
+            first_probe = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/local_probe.py",
+                    "--workspace",
+                    ".",
+                    "--wait-seconds",
+                    "0",
+                    "--output",
+                    "observations.json",
+                ],
+                cwd=work,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env={"PYTHONDONTWRITEBYTECODE": "1"},
+            )
+            self.assertEqual(
+                0, first_probe.returncode, first_probe.stdout + first_probe.stderr
+            )
+            first_observation = json.loads(
+                (work / "observations.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("inventory", first_observation["probe_mode"])
+            self.assertNotIn(
+                "unknown",
+                json.dumps(first_observation["bindings"]).lower(),
+            )
+            first_diagnosis = self.perform(first_observation)
+            self.assertEqual(
+                "capture-platform-policy-capabilities",
+                first_diagnosis["next_action"]["id"],
+            )
+            follow_up_argv = list(first_diagnosis["next_action"]["command_argv"])
+            follow_up_argv[0] = sys.executable
+            self.assertIn("--follow-up", follow_up_argv)
+            follow_up = subprocess.run(
+                follow_up_argv,
+                cwd=work,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env={"PYTHONDONTWRITEBYTECODE": "1"},
+            )
+            self.assertEqual(
+                0, follow_up.returncode, follow_up.stdout + follow_up.stderr
+            )
+            second_observation = json.loads(
+                (work / "observations.capabilities.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual("follow-up", second_observation["probe_mode"])
+            second_diagnosis = self.perform(second_observation)
+            self.assertEqual(
+                "prepare-incomplete-evidence-handoff",
+                second_diagnosis["next_action"]["id"],
+            )
+            self.assertNotIn(
+                "local_probe.py",
+                " ".join(second_diagnosis["next_action"]["command_argv"]),
+            )
+        finally:
+            if work.exists():
+                shutil.rmtree(work)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 {
   "attachments": "allowlisted-hash-only",
-  "automatic_data_bakery_network_send": false,
   "automatic_main_edit": false,
+  "automatic_maintainer_feedback_network_send": false,
   "automatic_production_deploy": false,
   "automatic_push": false,
   "automatic_teams_send": false,
@@ -15,7 +15,6 @@
   "exact_byte_bindings": true,
   "exact_replay": true,
   "external_network_used": false,
-  "final_learning_quantum_requires_customer_pass": true,
   "git_pushes": [],
   "global_lock": false,
   "global_raw_data_store": false,
@@ -39,7 +38,7 @@
   "public_content_audit": "required-before-parent-publication",
   "public_repository": "https://github.com/kody-w/rapp-roadside",
   "rar_install_remove": "reversible",
-  "release_gate": "isolated-worktree-Canary-Nightly-Alpha-Beta",
+  "release_gate": "isolated-checkout-Canary-Nightly-Alpha-Beta",
   "report_controls": "dedupe-rate-ttl-correlation-quarantine",
   "reporting_ai_text_logs": "hostile-data-never-instructions",
   "scaling_claim": "bounded-horizontal-cellular-measured-backpressure",
@@ -51,5 +50,6 @@
   "telemetry": false,
   "unbounded_or_infinite_claim": false,
   "uploads": [],
+  "verified_resolution_requires_customer_pass": true,
   "wire": "POST /chat"
 }

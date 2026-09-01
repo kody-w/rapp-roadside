@@ -27,34 +27,34 @@
       "sha256": "1d6ac7db1596e57d363c59b76e2da1f9394f23a4ea51ab885e4ff8819137fefb"
     },
     {
-      "bytes": 2371,
+      "bytes": 3162,
       "path": "README.md",
-      "sha256": "81724d9e54ba0f85853db5fa7b39c741b57c04de3ee732cc8216a59600125134"
+      "sha256": "a3c7b05581b42870faeb0c0f42ed951bdb4a74c7f103cb7c5f516495f3bb98ff"
     },
     {
-      "bytes": 1697,
+      "bytes": 1838,
       "path": "SECURITY.md",
-      "sha256": "8441b29ea7d22435f614fd6f7eac87ac5aec8907394ee441c35d631d9407f390"
+      "sha256": "d61b31c7d24548357be49de8fb3a44b877c2aba020efe156caf2d15272284505"
     },
     {
-      "bytes": 9922,
+      "bytes": 11649,
       "path": "SKILL.md",
-      "sha256": "8bd0b676ee3a5cc5658fae1ee1bfa7699abdae98d93295ad8684ed3e0b06bc6f"
+      "sha256": "1f47da0711f1e309abd3b754e548b2862d59eed222c66cc597639dba0c8fb2d4"
     },
     {
-      "bytes": 4424,
+      "bytes": 4787,
       "path": "canonical.html",
-      "sha256": "e04483dd0d6f4d80895152ade66853508fd9981c8c5431dfef1f966271ffbbdb"
+      "sha256": "5eedb50a0e6d8a8ea2a271c669d46d23bac7405a3e716a267ffa25455cfc5023"
     },
     {
-      "bytes": 4265,
+      "bytes": 4548,
       "path": "companion/PLAYBOOK.md",
-      "sha256": "14ae1822cef12d4047797440902a338a0300396bff577b4b7bb0d157d3a476e9"
+      "sha256": "0a1d6d4d3794782dbaf78804235461d9f6d36edeb147873beba558b7c1c45eb1"
     },
     {
-      "bytes": 2114,
+      "bytes": 2640,
       "path": "docs/CROSS-AGENT.md",
-      "sha256": "a02dfbec5726bd7ed515396b75f81cec21c0ede39b8321b904ceb64321be93de"
+      "sha256": "64aea7982307257704656eeb5b69634c7ab697b324f7d32270278cdc119c1d1e"
     },
     {
       "bytes": 699,
@@ -67,14 +67,14 @@
       "sha256": "8ecfcc6ce6112b6b1d67b2b04c0fd7c9205b2b51156c0f7f7676d390e3a509c5"
     },
     {
-      "bytes": 4661,
+      "bytes": 4716,
       "path": "fixtures/synthetic-slow-setup/after.json",
-      "sha256": "6ff204faa7d4062c632d05ae589b3a217199998129670d60870a3a4e6c571d90"
+      "sha256": "e9a545f3d22fe4e952df03d75cbd4994d86db983fc0db0c23964a51ea354a68f"
     },
     {
-      "bytes": 4537,
+      "bytes": 4592,
       "path": "fixtures/synthetic-slow-setup/before.json",
-      "sha256": "5bac25f33156b2dbb890cfc33de8256abbd70e6521c60f8d1651b47383d865f1"
+      "sha256": "6d12b49a28a9e3b47bba33e736adf1568cf3c3c521318bffbef8b66f6f2a5c64"
     },
     {
       "bytes": 38,
@@ -172,39 +172,39 @@
       "sha256": "fb6a2d0d3bd73f5a90eeca7b45d44d29ed0f2b54f251e30dea1bcdd060f864c8"
     },
     {
-      "bytes": 2389,
+      "bytes": 2578,
       "path": "manifest.json",
-      "sha256": "2f5d931bd3e8dbb25b18f5308263607a6955711a607ec87a5dc24fb4131ed9bb"
+      "sha256": "359a59511c173dbbfdc73863fa1a9d12ddd91ad88071408b189eed7dee0a0d52"
     },
     {
-      "bytes": 460,
+      "bytes": 461,
       "path": "rapp/agent.lock.json",
-      "sha256": "9c7273302b9924b9bd90ff5fff9baadcb19b28f3c6aee0017cf8bd882c316807"
+      "sha256": "58785a9f2e4ef1234e4a0581111d4d6437ee8026dfb084888728e89ef2a2bd0c"
     },
     {
-      "bytes": 2267,
+      "bytes": 2540,
       "path": "rapp/capability.json",
-      "sha256": "2d221ef009b637b631484f962da4b5ff9038fa641a46b7214684ef66e81d1373"
+      "sha256": "ca0d3c0fa92cf7d8c346e6b226acc3abd9bc8013172ba9dee1f007332780d515"
     },
     {
       "bytes": 3796,
       "path": "rapp/closed-loop.json",
-      "sha256": "2b9fd414e11912b03933050ad0787580257a3684012529a50887e9e07c4d8ca8"
+      "sha256": "0d2acbe802a693ce87ec4c6ede61371b354724842cc16ed1131f806cf74a6198"
     },
     {
-      "bytes": 821,
+      "bytes": 904,
       "path": "rapp/lifecycle.json",
-      "sha256": "a97cd3ddfa0aa8b43dc4ccaf1a6eca83329543bea8f3a71e60352c0c0fd71340"
+      "sha256": "6cefb428150991617ce618150ab9a8e51fdb7fd2231de4b9d8149a7d9eaff3c6"
     },
     {
-      "bytes": 1176,
+      "bytes": 1357,
       "path": "rapp/manifest.json",
-      "sha256": "88786a8cc07d9e1452a84149fe6a58429b0099e62ef22e756e34e80fdf341271"
+      "sha256": "e854963fe373386a431f51cd15aa8ba67967346ac7cb2b37cf46133acc43e0c3"
     },
     {
-      "bytes": 88396,
+      "bytes": 107966,
       "path": "rar_installer_troubleshooter_agent.py",
-      "sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d"
+      "sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04"
     },
     {
       "bytes": 3284,
@@ -217,9 +217,9 @@
       "sha256": "33dce7c0aafce17eec31a030676d900d7b076135b2f959801c00957d7bade8ed"
     },
     {
-      "bytes": 1178,
+      "bytes": 1184,
       "path": "schemas/customer-confirmation.schema.json",
-      "sha256": "1704f05040451b0054722d2d67cef9f241e04b95b10750901411af5b4b0546ab"
+      "sha256": "3a21b7485ee03ca7dfe52e8aa7298acc6e244ee567c97a8e56310e8a606dca35"
     },
     {
       "bytes": 2182,
@@ -237,14 +237,14 @@
       "sha256": "b6cdb7cf13cd787319c855f2aaa2b2f6a6e8b6ce3800f5a46449907bdb6fde86"
     },
     {
-      "bytes": 1410,
+      "bytes": 1543,
       "path": "schemas/lifecycle.schema.json",
-      "sha256": "dc83c74860bf6896e673285733778400f18f6e85038534179031ab96d735bfb2"
+      "sha256": "f4fa2d40f857fd3c3f6588050ae4a4ec337cc7681a665620acc1cd5fa66ce8a7"
     },
     {
-      "bytes": 13341,
+      "bytes": 14010,
       "path": "schemas/observation.schema.json",
-      "sha256": "2b89fd0c82876620a56d9e406aa5145897e7a799186fc674a2525542694b9303"
+      "sha256": "97f1ef7627d405d6089c7e8421f5d9a9b36a46fb3bcad506ee04f1c6dd831244"
     },
     {
       "bytes": 1623,
@@ -257,29 +257,29 @@
       "sha256": "2f1e51a39afb30872c60ece271a3721b469fa30a1cf1ddadaa33b732c6ebf2d8"
     },
     {
-      "bytes": 794,
+      "bytes": 923,
       "path": "schemas/repair-approval.schema.json",
-      "sha256": "5a42839a1df47e734699a2dbe7e38117310cc68cc610d19ea1ae98f68ca01964"
+      "sha256": "bcd83d894ea3ab8b838301daceac61971ed373538db9740fd0090bde92d15a78"
     },
     {
-      "bytes": 4928,
+      "bytes": 6151,
       "path": "schemas/report.schema.json",
-      "sha256": "405978ae0b50d937a8ed6e22365bee94b3a965a3b4eae2b1fa692da1dde37bb0"
+      "sha256": "ddd904c26fa0b2fbc7c160b860cbb35a6629aacffd8b14144d6c1f7789448e2c"
     },
     {
-      "bytes": 1240,
+      "bytes": 2749,
       "path": "schemas/retest.schema.json",
-      "sha256": "7a38fe2e4e177a128dfddb4c8550888dc607a00e323d3c5b6ffba0723d4ae357"
+      "sha256": "2667d7f52556172993366bd32a0cb17b3d8a5eb8fe6044d709dd4802c18ab931"
     },
     {
-      "bytes": 2562,
+      "bytes": 13975,
       "path": "schemas/rev-13-frame.schema.json",
-      "sha256": "f34cd770be4da501abdeba6db8c543781bcde1619b85e5988c79ad5aef372c5a"
+      "sha256": "6fdde087d0e5e426fa43c08bac9bb0547582545e6a687eff82503f604f81ecff"
     },
     {
-      "bytes": 382,
+      "bytes": 407,
       "path": "schemas/roadside-frame.schema.json",
-      "sha256": "85d6608206c3dc92a5912dac6f3811293ad1a2fd7f73c33112235c3db9095848"
+      "sha256": "c0c9f4bf084cf00e68ae028e2aab74a8365ec4bcdb97b7385674e53a4d905327"
     },
     {
       "bytes": 1937,
@@ -292,14 +292,14 @@
       "sha256": "37347ab684a4da1a9522de975e11dd72c77354eac92a634c4073826a55ead890"
     },
     {
-      "bytes": 34898,
+      "bytes": 26814,
       "path": "scripts/build_review_artifacts.py",
-      "sha256": "17bf1be07c6d46278ff4f034baf30aef55cb3add46fcbed5f33137744603677e"
+      "sha256": "7b1993ce8a518bd97c58a0bfb7cd4bba35f1a1427021934f28d00e932571166f"
     },
     {
-      "bytes": 3954,
+      "bytes": 19467,
       "path": "scripts/extract_roadside_frame.py",
-      "sha256": "b2be8b838dbc72f6309603d433995a2822cdc5237169610d3d30c4b3aaa3d0bb"
+      "sha256": "d5756016893e73c50cfc1f898bd65f0e96320b85e9cc5bc4e41ebe7a6e1e5d11"
     },
     {
       "bytes": 1661,
@@ -307,14 +307,14 @@
       "sha256": "44f15bacded07b5105fb7a5019a007c76870bfd8f1f401e666fd2e043096fe9f"
     },
     {
-      "bytes": 15537,
+      "bytes": 20132,
       "path": "scripts/local_probe.py",
-      "sha256": "e9d895936be5f05af91e5cf23289f19362af0df3dd200447748e6d63d94d0624"
+      "sha256": "cc862b4125bcf567e3754197cb2fd2b94c4f903ba9d29b8d1acad8055d26a3e5"
     },
     {
-      "bytes": 5267,
+      "bytes": 4246,
       "path": "scripts/public_audit.py",
-      "sha256": "cd6a7a3f21b040f98714825c4dabbf640f7e79ed6d4a54f0340f0c899b4b92d4"
+      "sha256": "684a571a7f11eb06b6388bf6b8f46bc14841a8c36464c378b5c775628a1d8db6"
     },
     {
       "bytes": 2645,
@@ -322,49 +322,84 @@
       "sha256": "202ada48f0fea0862954552ca642020bd23420ae63fb8141dd28fa627ca6608c"
     },
     {
-      "bytes": 7943,
+      "bytes": 10736,
       "path": "scripts/rar_lifecycle.py",
-      "sha256": "3a4d051605cbfc910ac3bbbf4d196a2882172fde350c235bc2830dc20f13dfbe"
+      "sha256": "ae6f18c717e83c42e354f103ceccaf8fd5831481132153def7d086c5a42bbc8e"
     },
     {
-      "bytes": 5002,
+      "bytes": 5661,
       "path": "scripts/refresh_integrity.py",
-      "sha256": "ab56eac438382b8d08c30797b47dd0287be33dff96c2c011861ff7b52cf1291a"
+      "sha256": "f87d23f91703e2c83df5e5c4e0ea142861c96c391226851c608f287bef22058f"
     },
     {
-      "bytes": 3281,
+      "bytes": 4701,
       "path": "scripts/run_agent.py",
-      "sha256": "5cd4295a3d2bffe91958c49db8b7fb52cf2bc4f0b565b7393a7c5f7d0e6ff1c9"
+      "sha256": "fb715609efc1644e3a1d8f0e2d4e244474f8a047fd0215ea00595024d71a7477"
     },
     {
-      "bytes": 21118,
+      "bytes": 21594,
       "path": "scripts/skill_forge.py",
-      "sha256": "d883992ff4a5f252ebbf4f0e9bd8ef3efcfe0a2d54a4a13cdf43ee17802d38ac"
+      "sha256": "f2d25caa285c325a795afb00022556db7f8a54e413952c98ed87d11ac20fcb73"
     },
     {
-      "bytes": 5837,
+      "bytes": 7616,
       "path": "scripts/test_fresh_clone.py",
-      "sha256": "0b508ecbc96efa9e3e7c28c6b065782ff3de4f79029754e5d0a1e622e702b147"
+      "sha256": "5deecfa3af6504b4204bd0735e07b555078479482c8a1a41007d6e1af839687d"
     },
     {
-      "bytes": 1805,
+      "bytes": 9054,
       "path": "scripts/write_handoff.py",
-      "sha256": "63c2c42e28c9fe51fd8242da565cdf365464266e175d281d5212b889b7ca2a77"
+      "sha256": "8d6268ac088d652751a7fae07e798ff7dc79796129c3670708fd85389396f148"
     },
     {
-      "bytes": 1383,
+      "bytes": 1507,
       "path": "teams-sharing-instructions.md",
-      "sha256": "2275e9a6dc0842a10496f3546ef51d480d7b62c5043de53534048442d231a33b"
+      "sha256": "ce5805491535873ff14b0ea64b470af82b8ad6942ef7e6f212ceca41a57bd0c0"
     },
     {
-      "bytes": 1512,
+      "bytes": 24338,
+      "path": "tests/test_agent.py",
+      "sha256": "a333f03819da2a270095120d6b77f71768af7d6c5d5ad239caba65c8f28d1ffd"
+    },
+    {
+      "bytes": 11327,
+      "path": "tests/test_closed_loop.py",
+      "sha256": "477167f5818d8e33fc4f57c68140d343f0cdf2583adf7d0673999cd48646ab99"
+    },
+    {
+      "bytes": 5139,
+      "path": "tests/test_frames.py",
+      "sha256": "cf165ee3a6e8493f8f73454b7573bfb1da5299da7d496ece5aa4780edc541601"
+    },
+    {
+      "bytes": 5354,
+      "path": "tests/test_lifecycle.py",
+      "sha256": "d24978f2dbdbcadae888eae080b8fe5317097b0a9b62d0497ac692fe2e413656"
+    },
+    {
+      "bytes": 11124,
+      "path": "tests/test_mutations.py",
+      "sha256": "123af312f8ed1b662f0336025e7ebe0271fa68da14e7109591f0c1270d96fd46"
+    },
+    {
+      "bytes": 2873,
+      "path": "tests/test_public_release.py",
+      "sha256": "f77c8c80a574b746f8a16d4365c282ece37c08af3835af9075e6b9ee79522e62"
+    },
+    {
+      "bytes": 13881,
+      "path": "tests/test_unknown_unknowns.py",
+      "sha256": "50ad42eb39e6835f693fb127f441caa1d5f1ba7c819cfd13b984bd8a45240df7"
+    },
+    {
+      "bytes": 1693,
       "path": "toasted/manifest.json",
-      "sha256": "02d7dcd13b182503fbfe702faab80c4fc27bb6ddf43390b4743dc6508a899ec9"
+      "sha256": "73019997ee5457918e7c3e648215381e4feb582e722f546042b7ffbf96ced0fd"
     },
     {
-      "bytes": 8677,
+      "bytes": 8674,
       "path": "unknown-unknowns-coverage.json",
-      "sha256": "9bb189945300e9368208da5189c28eea4fbf33f23fca4cc7d1ff7494d46bd2a7"
+      "sha256": "8aff27c55aa09b3e0035c98cbedfd3fea50cd89418c85c709cb74f4d254fe40f"
     }
   ],
   "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
@@ -373,7 +408,7 @@
   "schema": "toasted-package-lock/1.0",
   "skill_hash_scope": "core-files-before-manifest-annotations",
   "skill_name": "rapp-roadside",
-  "skill_sha256": "b0316149fac89d1f20b8e451bc9a29f3601b794f6255bb1fc489c6f587416125",
-  "source_sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d",
+  "skill_sha256": "0e9d2c75df4fd48fdea38a9cb797662df4a76ca8d5d4651f7c162164be29dd83",
+  "source_sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
   "version": "1.0.0"
 }

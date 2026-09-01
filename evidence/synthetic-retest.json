@@ -174,11 +174,12 @@
     "ring": "stable-main",
     "ring_manifest_sha256": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
     "source_commit": "0000000000000000000000000000000000000000",
-    "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a"
+    "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a",
+    "unreported_fields": []
   },
   "case_id": "synthetic-slow-setup",
   "credentials_collected": false,
-  "diagnosis_report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
+  "diagnosis_report_id": "a281249e497b9661c2594e780ba9e75f048425a7c40f26ceae3e9013a853b221",
   "external_network_used_by_agent": false,
   "grail_modified": false,
   "machine_issue_artifact": "Roadside Frame",
@@ -205,7 +206,7 @@
     "quarantine_reasons": [],
     "quarantined": false
   },
-  "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
+  "retest_id": "0c977c4645303a4027193ea37fafaa3329f79fe01aa1b9d4cde3b8d64c36d018",
   "schema": "rar-installer-troubleshooter/retest-1",
   "status": "PASS",
   "support_system": "RAPP Roadside",

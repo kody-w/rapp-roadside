@@ -35,6 +35,13 @@
       "type": "string",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
+    "probe_mode": {
+      "enum": [
+        "direct",
+        "inventory",
+        "follow-up"
+      ]
+    },
     "signature_phase": {
       "type": "string",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
@@ -273,38 +280,70 @@
         "source_tree_sha256",
         "dependency_lock_sha256",
         "catalog_sha256",
-        "installer_sha256s"
+        "installer_sha256s",
+        "unreported_fields"
       ],
       "properties": {
         "ring": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "installer_release_frame_version": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "installer_release_frame_sha256": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "ring_manifest_sha256": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "source_commit": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "source_tree_sha256": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "dependency_lock_sha256": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "catalog_sha256": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "installer_sha256s": {
           "type": "object",
           "additionalProperties": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "unreported_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
           }
         }
       }

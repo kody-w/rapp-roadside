@@ -1,9 +1,9 @@
 {
   "automatic_actions": {
-    "data_bakery_network_send": false,
     "destructive_customer_repair": false,
     "git_push": false,
     "main_edit": false,
+    "maintainer_feedback_network_send": false,
     "production_deploy": false,
     "teams_send": false
   },
@@ -17,6 +17,7 @@
   "entrypoint": "rar_installer_troubleshooter_agent.py",
   "grail_modified": false,
   "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
+  "independent_reproduction_required": true,
   "issue_signature_domain": "rapp-roadside:issue-signature/v1",
   "license": "MIT",
   "lifecycle": "rapp/lifecycle.json",
@@ -36,8 +37,8 @@
   "share_with_kody_embeds_roadside_frame": true,
   "skill": "SKILL.md",
   "skill_name": "rapp-roadside",
-  "skill_sha256": "b0316149fac89d1f20b8e451bc9a29f3601b794f6255bb1fc489c6f587416125",
-  "source_sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d",
+  "skill_sha256": "0e9d2c75df4fd48fdea38a9cb797662df4a76ca8d5d4651f7c162164be29dd83",
+  "source_sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
   "stable_main_identity": "kody-w/rapp-roadside@main",
   "telemetry": false,
   "unknown_unknowns": {
@@ -59,6 +60,9 @@
     ],
     "scaling": "bounded-horizontal-cellular-with-measured-backpressure"
   },
+  "unpinned_integrity_claim": "internal-consistency-only",
+  "unsigned_frame_authority": false,
+  "unsigned_frame_origin": "untrusted",
   "version": "1.0.0",
   "wire": {
     "method": "POST",

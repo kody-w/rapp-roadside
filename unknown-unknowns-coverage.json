@@ -135,7 +135,7 @@
       "applicable": true,
       "controls": [
         "RAPP Pit Crew imports the exact failing replay as a named regression test",
-        "isolated feature/fix worktree",
+        "isolated feature/fix checkout",
         "platform and ring matrices",
         "clean-machine installer tests",
         "one-way Canary to Nightly to Alpha to Beta soak",
@@ -148,7 +148,7 @@
         "test_failed_customer_confirmation_does_not_learn",
         "test_rollback_must_be_available_and_tested",
         "test_wrong_ring_order_fails_release_confirmation",
-        "test_successful_confirmation_becomes_final_learning_quantum",
+        "test_successful_confirmation_becomes_verified_resolution",
         "test_direct_main_mutation_is_blocked",
         "test_linux_launcher_mode_action",
         "test_macos_installer_mirror_action",

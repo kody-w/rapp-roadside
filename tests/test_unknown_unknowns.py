@@ -148,7 +148,8 @@ class UnknownUnknownHardeningTests(unittest.TestCase):
 
     def test_exact_byte_binding_is_required(self):
         observation = synthetic()
-        observation["bindings"]["catalog_sha256"] = "unknown"
+        observation["bindings"]["catalog_sha256"] = None
+        observation["bindings"]["unreported_fields"].append("catalog_sha256")
         result = self.diagnose(observation)
         self.assertEqual(
             "exact-byte-bindings-incomplete", result["finding"]["code"]
@@ -323,7 +324,7 @@ class UnknownUnknownHardeningTests(unittest.TestCase):
     def test_pit_crew_release_gates_are_explicit(self):
         result = self.diagnose(synthetic())
         flow = " ".join(result["maintainer_handoff"]["required_flow"])
-        self.assertIn("isolated feature/fix worktree", flow)
+        self.assertIn("isolated feature/fix checkout", flow)
         self.assertIn("exact failing replay", flow)
         self.assertIn("Canary, Nightly, Alpha, then Beta soak", flow)
         self.assertIn("no-fast-forward release merge", flow)

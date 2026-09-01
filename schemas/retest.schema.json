@@ -1,13 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:rapp-roadside:retest:1",
-  "title": "RAPP Roadside exact retest result",
+  "title": "RAPP Roadside canonical retest result",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schema",
     "support_system",
     "maintainer_system",
     "machine_issue_artifact",
+    "participation",
     "case_id",
     "diagnosis_report_id",
     "status",
@@ -35,6 +37,17 @@
     "machine_issue_artifact": {
       "const": "Roadside Frame"
     },
+    "participation": {
+      "const": "voluntary"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "diagnosis_report_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "status": {
       "enum": [
         "PASS",
@@ -43,7 +56,62 @@
     },
     "assertions": {
       "type": "array",
-      "minItems": 1
+      "minItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "expected",
+          "actual",
+          "passed"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "replay_manifest": {
+      "type": "object"
+    },
+    "byte_bindings": {
+      "type": "object"
+    },
+    "report_controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "quarantined",
+        "quarantine_reasons"
+      ],
+      "properties": {
+        "quarantined": {
+          "type": "boolean"
+        },
+        "quarantine_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "wire_preserved": {
+      "const": {
+        "method": "POST",
+        "path": "/chat",
+        "request_field": "user_input",
+        "success_keys": [
+          "response",
+          "agent_logs",
+          "session_id"
+        ]
+      }
     },
     "grail_modified": {
       "const": false
@@ -56,6 +124,10 @@
     },
     "telemetry": {
       "const": false
+    },
+    "retest_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     }
   }
 }

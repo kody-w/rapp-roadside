@@ -16,16 +16,17 @@
       "ring": "stable-main",
       "ring_manifest_sha256": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
       "source_commit": "0000000000000000000000000000000000000000",
-      "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a"
+      "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a",
+      "unreported_fields": []
     }
   },
   "case_id": "synthetic-slow-setup",
   "closed_loop": {
     "automatic_actions": {
-      "data_bakery_network_send": false,
       "destructive_customer_repair": false,
       "git_push": false,
       "main_edit": false,
+      "maintainer_feedback_network_send": false,
       "production_deploy": false,
       "teams_send": false
     },
@@ -68,6 +69,7 @@
         "health_status",
         "installer_docs_mirrors_match",
         "launcher_present",
+        "probe_mode",
         "python_version",
         "setup_elapsed_seconds",
         "setup_stage",
@@ -147,9 +149,9 @@
     "repository": "kody-w/rapp-roadside",
     "required_flow": [
       "intake the hash-only Roadside Frame and independently reproduce",
-      "create an isolated feature/fix worktree from stable main",
+      "create an isolated feature/fix checkout from stable main",
       "import the exact failing replay as a named regression test",
-      "apply and retest the reviewed change in that worktree",
+      "apply and retest the reviewed change in that checkout",
       "pass platform and ring matrices plus clean-machine installer tests",
       "promote one-way through Canary, Nightly, Alpha, then Beta soak",
       "perform a no-fast-forward release merge with rollback evidence",
@@ -200,6 +202,7 @@
     "health_status": "starting",
     "installer_docs_mirrors_match": true,
     "launcher_present": true,
+    "probe_mode": "direct",
     "python_version": "3.11.9",
     "setup_elapsed_seconds": 95,
     "setup_stage": "agent-dependency-install",
@@ -232,7 +235,7 @@
   },
   "release_readiness": {
     "eligible": false,
-    "required_gate": "RAPP Pit Crew isolated-worktree-Canary-Nightly-Alpha-Beta",
+    "required_gate": "RAPP Pit Crew isolated-checkout-Canary-Nightly-Alpha-Beta",
     "stable_main_direct_push": false
   },
   "replay_manifest": {
@@ -273,7 +276,7 @@
     "trust_weight_bps": 8000,
     "ttl_seconds": 86400
   },
-  "report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
+  "report_id": "a281249e497b9661c2594e780ba9e75f048425a7c40f26ceae3e9013a853b221",
   "retest": {
     "assertions": [
       {
@@ -378,12 +381,13 @@
       }
     ],
     "hardening": {
+      "reject_supplied_assertion_drift": true,
       "require_same_ring_source_dependency_catalog_bytes": true,
       "require_same_shard": true,
       "require_transport_screen": true,
       "require_valid_replay": true
     },
-    "mode": "exact-assertions"
+    "mode": "canonical-from-verified-diagnosis"
   },
   "scaling": {
     "cache_measurements": {
@@ -412,7 +416,7 @@
   "schema": "rar-installer-troubleshooter/report-1",
   "support_system": "RAPP Roadside",
   "target": {
-    "release_rule": "RAPP Roadside diagnoses locally. RAPP Pit Crew changes go through an isolated worktree and a release merge; never push directly to main.",
+    "release_rule": "RAPP Roadside diagnoses locally. RAPP Pit Crew changes go through an isolated checkout and a release merge; never push directly to main.",
     "stable_main_identity": "kody-w/rapp-roadside@main"
   }
 }

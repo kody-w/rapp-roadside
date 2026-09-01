@@ -41,6 +41,12 @@
   "stable_main_identity": "kody-w/rapp-roadside@main",
   "maintainer_system": "RAPP Pit Crew",
   "machine_issue_artifact": "Roadside Frame",
+  "unsigned_frame_origin": "untrusted",
+  "unsigned_frame_authority": false,
+  "independent_reproduction_required": true,
+  "frame_only_fix_or_release": false,
+  "unpinned_integrity_claim": "internal-consistency-only",
+  "trusted_integrity_requires_external_digest": true,
   "protocol_schema_ids_retained": true,
   "rar_install_remove_reversible": true,
   "unknown_unknowns": {
@@ -59,7 +65,7 @@
     "global_lock": false,
     "infinity_claim": false
   },
-  "maintainer_change_path": "isolated-worktree-test-release-merge",
+  "maintainer_change_path": "isolated-checkout-test-release-merge",
   "direct_push_main": false,
   "wire": {
     "method": "POST",

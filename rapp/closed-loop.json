@@ -6,7 +6,7 @@
   "customer_state_machine": {
     "initial": "identify-installed-release",
     "terminal": [
-      "confirmed-learning-quantum",
+      "confirmed-verified-resolution",
       "stopped-without-change",
       "rolled-back"
     ],
@@ -22,7 +22,7 @@
       "export-inert-share-with-kody",
       "await-pit-crew-release",
       "rerun-identical-released-test",
-      "confirmed-learning-quantum"
+      "confirmed-verified-resolution"
     ],
     "required_order": [
       "identify-installed-release",
@@ -36,7 +36,7 @@
       "export-inert-share-with-kody",
       "await-pit-crew-release",
       "rerun-identical-released-test",
-      "confirmed-learning-quantum"
+      "confirmed-verified-resolution"
     ],
     "installed_release_binding": [
       "installer release frame version and SHA-256",
@@ -58,7 +58,7 @@
       "verify-roadside-frame-attachments-version",
       "reproduce-on-maintainer-device",
       "request-at-most-one-bounded-follow-up-if-needed",
-      "create-isolated-worktree-at-exact-affected-main-commit",
+      "create-isolated-checkout-at-exact-affected-main-commit",
       "import-reproduction-as-regression-test",
       "patch",
       "exact-retest",
@@ -70,7 +70,7 @@
       "human-approved-release-merge-to-main",
       "emit-release-frame",
       "customer-reruns-identical-test",
-      "confirmation-becomes-final-learning-quantum"
+      "confirmation-becomes-verified-resolution"
     ],
     "follow_up_limit": 1,
     "soak_order": [
@@ -113,7 +113,7 @@
   "learning": {
     "destination": "maintainer improvement queue",
     "automatic_network_send": false,
-    "novel_verified_result": "emit an inert verified learning-quantum record",
+    "novel_verified_result": "emit an inert verified resolution record",
     "duplicate": "aggregate hash-addressed evidence without re-mining",
     "failed_confirmation": "do not learn; preserve rollback and mismatch evidence"
   },

@@ -9,7 +9,7 @@
     "status",
     "issue_signature",
     "failure_reasons",
-    "learning_quantum",
+    "verified_resolution",
     "next_action",
     "automatic_actions",
     "telemetry",
@@ -32,7 +32,7 @@
     "failure_reasons": {
       "type": "array"
     },
-    "learning_quantum": {
+    "verified_resolution": {
       "type": [
         "object",
         "null"

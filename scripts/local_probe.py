@@ -11,9 +11,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import locale
 import os
 import platform
+import ssl
 import stat
+import subprocess
 import sys
 import time
 import urllib.error
@@ -36,7 +39,7 @@ def _canonical(value):
 
 
 def _file_hash(path):
-    return _sha256(path.read_bytes()) if path.is_file() else "unknown"
+    return _sha256(path.read_bytes()) if path.is_file() else None
 
 
 def _source_tree_hash(root):
@@ -53,7 +56,7 @@ def _source_tree_hash(root):
         path = root / relative
         if path.is_file():
             records.append({"path": relative, "sha256": _file_hash(path)})
-    return _sha256(_canonical(records)) if records else "unknown"
+    return _sha256(_canonical(records)) if records else None
 
 
 def _platform_name():
@@ -78,19 +81,28 @@ def _loopback_url(value):
     ).rstrip("/")
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def _request(method, url, body=None, timeout=3):
     data = None if body is None else json.dumps(body).encode("utf-8")
     headers = {"Accept": "application/json"}
     if data is not None:
         headers["Content-Type"] = "application/json"
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
+    opener = urllib.request.build_opener(_NoRedirect())
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with opener.open(request, timeout=timeout) as response:
             raw = response.read(1_000_001)
             status = response.status
     except urllib.error.HTTPError as error:
-        raw = error.read(1_000_001)
-        status = error.code
+        try:
+            raw = error.read(1_000_001)
+            status = error.code
+        finally:
+            error.close()
     except (urllib.error.URLError, TimeoutError):
         return None, {}
     if len(raw) > 1_000_000:
@@ -100,6 +112,169 @@ def _request(method, url, body=None, timeout=3):
     except (UnicodeDecodeError, json.JSONDecodeError):
         payload = {}
     return status, payload if isinstance(payload, dict) else {}
+
+
+def _run_local(argv, cwd=None):
+    try:
+        result = subprocess.run(
+            argv,
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+            env={
+                "LC_ALL": "C",
+                "PATH": os.environ.get("PATH", ""),
+            },
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if result.returncode != 0:
+        return None
+    value = result.stdout.strip()
+    return value or None
+
+
+def _git_bindings(root):
+    commit = _run_local(
+        ["git", "-C", str(root), "rev-parse", "--verify", "HEAD"]
+    )
+    branch = _run_local(
+        ["git", "-C", str(root), "branch", "--show-current"]
+    )
+    if commit is None or len(commit) != 40:
+        commit = None
+    return commit, branch
+
+
+def _filesystem_name(root):
+    system = platform.system()
+    if system == "Darwin":
+        value = _run_local(["stat", "-f", "%T", str(root)])
+    elif system == "Linux":
+        value = _run_local(["stat", "-f", "-c", "%T", str(root)])
+    else:
+        value = None
+    return value.lower() if value else None
+
+
+def _shell_name():
+    value = os.environ.get("COMSPEC") if os.name == "nt" else os.environ.get("SHELL")
+    return Path(value).name.lower() if value else None
+
+
+def _environment_record(root, follow_up):
+    unavailable = "unsupported" if follow_up else "unreported"
+    filesystem = _filesystem_name(root)
+    shell = _shell_name()
+    try:
+        locale_name = locale.getlocale()[0]
+    except (ValueError, TypeError):
+        locale_name = None
+    verify_paths = ssl.get_default_verify_paths()
+    certificate_state = (
+        "system-trust-available"
+        if any(
+            path and Path(path).exists()
+            for path in (verify_paths.cafile, verify_paths.capath)
+        )
+        else None
+    )
+    proxy_names = {
+        "ALL_PROXY",
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "NO_PROXY",
+        "all_proxy",
+        "http_proxy",
+        "https_proxy",
+        "no_proxy",
+    }
+    proxy_state = (
+        "configured"
+        if proxy_names.intersection(os.environ)
+        else "not-configured"
+    )
+    os_build = "-".join(
+        part
+        for part in (
+            platform.system().lower(),
+            platform.release().lower(),
+            platform.version().lower(),
+        )
+        if part
+    )
+    return {
+        "architecture": platform.machine().lower() or unavailable,
+        "certificate_state": certificate_state or unavailable,
+        "clock_state": "monotonic-and-wall-clock-observed",
+        "filesystem": filesystem or unavailable,
+        "locale": (locale_name or unavailable).lower(),
+        "managed_policy": unavailable,
+        "os_build": os_build or unavailable,
+        "proxy_state": proxy_state,
+        "security_product_state": unavailable,
+        "shell": shell or unavailable,
+    }
+
+
+def _ring_value(ring_path, git_branch):
+    if ring_path is not None and ring_path.suffix.lower() == ".json":
+        try:
+            payload = json.loads(ring_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            payload = {}
+        if isinstance(payload, dict):
+            for key in ("ring", "channel", "release_channel"):
+                value = str(payload.get(key) or "").strip().lower()
+                if value in {"stable-main", "canary", "beta", "dev"}:
+                    return value
+                if value in {"main", "stable"}:
+                    return "stable-main"
+    branch = str(git_branch or "").strip().lower()
+    if branch == "main":
+        return "stable-main"
+    if branch in {"canary", "beta", "dev"}:
+        return branch
+    return None
+
+
+def _binding_record(
+    workspace,
+    dependency_path,
+    catalog_path,
+    ring_path,
+    installer_frame_path,
+    installer_frame_version,
+    installer_hashes,
+):
+    source_commit, git_branch = _git_bindings(workspace)
+    values = {
+        "ring": _ring_value(ring_path, git_branch),
+        "installer_release_frame_version": installer_frame_version,
+        "installer_release_frame_sha256": _file_hash(installer_frame_path)
+        if installer_frame_path is not None
+        else None,
+        "ring_manifest_sha256": _file_hash(ring_path)
+        if ring_path is not None
+        else None,
+        "source_commit": source_commit,
+        "source_tree_sha256": _source_tree_hash(workspace),
+        "dependency_lock_sha256": _file_hash(dependency_path)
+        if dependency_path is not None
+        else None,
+        "catalog_sha256": _file_hash(catalog_path)
+        if catalog_path is not None
+        else None,
+        "installer_sha256s": installer_hashes,
+    }
+    values["unreported_fields"] = sorted(
+        key
+        for key, value in values.items()
+        if key != "unreported_fields" and (value is None or value == {})
+    )
+    return values
 
 
 def _installer_mirrors_match(root):
@@ -138,6 +313,14 @@ def main(argv=None):
     )
     parser.add_argument("--check-chat", action="store_true")
     parser.add_argument("--allow-loopback", action="store_true")
+    parser.add_argument(
+        "--follow-up",
+        action="store_true",
+        help=(
+            "perform the single bounded capability follow-up; unavailable "
+            "fields become explicitly unsupported instead of being retried"
+        ),
+    )
     args = parser.parse_args(argv)
     if args.wait_seconds < 0 or args.wait_seconds > 180:
         raise SystemExit("wait-seconds must be between 0 and 180")
@@ -226,22 +409,35 @@ def main(argv=None):
         ),
         None,
     )
-    installer_frame_version = "unknown"
+    installer_frame_version = None
     if installer_frame_path is not None:
         try:
             installer_frame_payload = json.loads(
                 installer_frame_path.read_text(encoding="utf-8")
             )
             installer_frame_version = str(
-                installer_frame_payload.get("schema") or "unknown"
+                installer_frame_payload.get("schema") or ""
             )
+            if not installer_frame_version:
+                installer_frame_version = None
         except (OSError, json.JSONDecodeError):
-            installer_frame_version = "unknown"
+            installer_frame_version = None
+    bindings = _binding_record(
+        workspace,
+        dependency_path,
+        catalog_path,
+        ring_path,
+        installer_frame_path,
+        installer_frame_version,
+        installer_hashes,
+    )
+    environment = _environment_record(workspace, args.follow_up)
     input_record = {
         "workspace": "<rapp-root>",
         "wait_seconds": args.wait_seconds,
         "check_chat": args.check_chat,
         "allow_loopback": args.allow_loopback,
+        "follow_up": args.follow_up,
     }
     before_record = {
         "source_present": source_present,
@@ -268,6 +464,7 @@ def main(argv=None):
     observation = {
         "case_id": "local-rapp-setup",
         "failure_code": "unclassified",
+        "probe_mode": "follow-up" if args.follow_up else "inventory",
         "platform": platform_name,
         "setup_elapsed_seconds": args.wait_seconds,
         "setup_stage": (
@@ -296,43 +493,8 @@ def main(argv=None):
             "external_network_observed": False,
             "grail_modified": False,
         },
-        "environment": {
-            "architecture": platform.machine().lower() or "unknown",
-            "certificate_state": "unknown",
-            "clock_state": "monotonic-and-wall-clock-observed",
-            "filesystem": "unknown",
-            "locale": "unknown",
-            "managed_policy": "unknown",
-            "os_build": platform.release().lower() or "unknown",
-            "proxy_state": "unknown",
-            "security_product_state": "unknown",
-            "shell": "unknown",
-        },
-        "bindings": {
-            "ring": "unknown",
-            "installer_release_frame_version": installer_frame_version,
-            "installer_release_frame_sha256": (
-                _file_hash(installer_frame_path)
-                if installer_frame_path is not None
-                else "unknown"
-            ),
-            "ring_manifest_sha256": (
-                _file_hash(ring_path) if ring_path is not None else "unknown"
-            ),
-            "source_commit": "unknown",
-            "source_tree_sha256": source_tree_sha256,
-            "dependency_lock_sha256": (
-                _file_hash(dependency_path)
-                if dependency_path is not None
-                else "unknown"
-            ),
-            "catalog_sha256": (
-                _file_hash(catalog_path)
-                if catalog_path is not None
-                else "unknown"
-            ),
-            "installer_sha256s": installer_hashes,
-        },
+        "environment": environment,
+        "bindings": bindings,
         "reporting_ai": {
             "text_present": False,
             "text_sha256": None,
@@ -359,7 +521,8 @@ def main(argv=None):
                 "<observation-json>",
             ]
             + (["--check-chat"] if args.check_chat else [])
-            + (["--allow-loopback"] if args.allow_loopback else []),
+            + (["--allow-loopback"] if args.allow_loopback else [])
+            + (["--follow-up"] if args.follow_up else []),
             "logical_cwd": "<rapp-root>",
             "input_sha256": _sha256(_canonical(input_record)),
             "before_state_sha256": _sha256(_canonical(before_record)),

@@ -16,6 +16,7 @@
     "install",
     "remove",
     "catalog_requirement",
+    "unpinned_verification",
     "global_lock",
     "network",
     "telemetry",
@@ -58,6 +59,9 @@
     },
     "catalog_requirement": {
       "type": "string"
+    },
+    "unpinned_verification": {
+      "const": "internal-consistency-only-unauthenticated-origin"
     },
     "global_lock": {
       "const": false

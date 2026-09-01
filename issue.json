@@ -14,7 +14,7 @@
     "dedupe, rate, TTL, and correlation quarantine",
     "human-approved reversible copy repair",
     "reversible RAR install/remove",
-    "isolated-worktree Canary/Nightly/Alpha/Beta release gates",
+    "isolated-checkout Canary/Nightly/Alpha/Beta release gates",
     "bounded cellular scaling with measured backpressure",
     "no global raw-data store or global lock",
     "no infinity claim",
@@ -53,10 +53,10 @@
     "after": "fixtures/synthetic-slow-setup/after.json",
     "before": "fixtures/synthetic-slow-setup/before.json",
     "case_id": "synthetic-slow-setup",
-    "report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
+    "report_id": "a281249e497b9661c2594e780ba9e75f048425a7c40f26ceae3e9013a853b221",
     "result": "PASS",
-    "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
-    "tests_run": 80
+    "retest_id": "0c977c4645303a4027193ea37fafaa3329f79fe01aa1b9d4cde3b8d64c36d018",
+    "tests_run": 94
   },
   "labels": [
     "installer",
@@ -68,7 +68,7 @@
   ],
   "machine_issue_artifact": "Roadside Frame",
   "maintainer_flow": {
-    "change_path": "isolated feature/fix worktree -> tests -> release merge",
+    "change_path": "isolated feature/fix checkout -> tests -> release merge",
     "direct_push_main": false,
     "stages": [
       "intake",

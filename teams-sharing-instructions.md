@@ -26,5 +26,7 @@ After local review:
    replay/retest, hostile-report quarantine, exact byte bindings, reversible
    lifecycle, cellular backpressure, `POST /chat` preservation, and RAPP Pit
    Crew Canary/Nightly/Alpha/Beta handoff. The Markdown is inert and its
-   embedded Roadside Frame must be verified before use.
+   embedded Roadside Frame must be validated before use. An unsigned frame has
+   untrusted origin and no authority; independently reproduce before any fix or
+   release decision.
 8. Do not publish or upload to RAR from the worker package.

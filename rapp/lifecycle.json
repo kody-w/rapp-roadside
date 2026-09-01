@@ -22,7 +22,8 @@
     "removed_version_preserved": true,
     "prior_version_restored": true
   },
-  "catalog_requirement": "signed-catalog-hash-must-be-verified-by-parent-rar-client",
+  "catalog_requirement": "externally-trusted-catalog-entry-must-pin-package-lock-sha256",
+  "unpinned_verification": "internal-consistency-only-unauthenticated-origin",
   "global_lock": false,
   "network": false,
   "telemetry": false,
