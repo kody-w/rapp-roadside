@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rar-installer-troubleshooter:agent-input:1",
+  "title": "RAPP Roadside input",
+  "description": "Customer-facing on-device support input. The retained URN is a compatibility protocol ID.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "operation"
+  ],
+  "properties": {
+    "operation": {
+      "enum": [
+        "capability",
+        "diagnose",
+        "prepare_repair",
+        "fix_copy",
+        "retest",
+        "confirm_release"
+      ]
+    },
+    "observations": {
+      "$ref": "observation.schema.json"
+    },
+    "observation_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "diagnosis": {
+      "$ref": "report.schema.json"
+    },
+    "diagnosis_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "copy_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_approved",
+        "action_id",
+        "source_fingerprint",
+        "copy_target_sha256",
+        "reversible",
+        "activation"
+      ],
+      "properties": {
+        "human_approved": {
+          "const": true
+        },
+        "action_id": {
+          "type": "string"
+        },
+        "source_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "copy_target_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reversible": {
+          "const": true
+        },
+        "activation": {
+          "const": "copy-only-no-activation"
+        }
+    },
+    "confirmation": {
+        "type": "object"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "diagnose"
+          }
+        }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "required": [
+              "observations"
+            ]
+          },
+          {
+            "required": [
+              "observation_path"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "confirm_release"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "confirmation"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "diagnosis"
+            ]
+          },
+          {
+            "required": [
+              "diagnosis_path"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "prepare_repair"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "action_id",
+          "source_dir",
+          "copy_dir"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "fix_copy"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "action_id",
+          "source_dir",
+          "copy_dir"
+          ,"approval"
+        ]
+      }
+    }
+  ]
+}

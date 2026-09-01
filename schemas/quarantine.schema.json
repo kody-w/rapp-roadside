@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:quarantine:1",
+  "title": "RAPP Roadside hash-only quarantine record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "support_system",
+    "maintainer_system",
+    "report_id",
+    "dedupe_key",
+    "quarantine_reasons",
+    "source_cell_id",
+    "ttl_seconds",
+    "attachment_hashes",
+    "replay_hashes",
+    "byte_bindings",
+    "shard_key_sha256",
+    "raw_reporting_ai_text_or_logs_retained",
+    "private_paths_retained",
+    "global_raw_data_store",
+    "global_lock",
+    "publication"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rapp-roadside/quarantine-1"
+    },
+    "support_system": {
+      "const": "RAPP Roadside"
+    },
+    "maintainer_system": {
+      "const": "RAPP Pit Crew"
+    },
+    "report_id": {
+      "type": "string"
+    },
+    "dedupe_key": {
+      "type": "string"
+    },
+    "quarantine_reasons": {
+      "type": "array"
+    },
+    "source_cell_id": {
+      "type": "string"
+    },
+    "ttl_seconds": {
+      "type": "integer"
+    },
+    "attachment_hashes": {
+      "type": "array"
+    },
+    "replay_hashes": {
+      "type": "object"
+    },
+    "byte_bindings": {
+      "type": "object"
+    },
+    "shard_key_sha256": {
+      "type": "string"
+    },
+    "raw_reporting_ai_text_or_logs_retained": {
+      "const": false
+    },
+    "private_paths_retained": {
+      "const": false
+    },
+    "global_raw_data_store": {
+      "const": false
+    },
+    "global_lock": {
+      "const": false
+    },
+    "publication": {
+      "const": "none"
+    }
+  }
+}

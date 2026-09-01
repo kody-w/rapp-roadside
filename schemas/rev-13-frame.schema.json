@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rar-review-frame:rev-13",
+  "title": "Exact unsigned RAPP Roadside Frame rev-13",
+  "description": "Roadside Frame constraints. The retained kind rar.review.rev-13 is a compatibility protocol ID.",
+  "type": "object",
+  "additionalProperties": false,
+  "minProperties": 11,
+  "maxProperties": 11,
+  "required": [
+    "spec",
+    "kind",
+    "stream_id",
+    "seq",
+    "utc",
+    "payload",
+    "payload_hash",
+    "frame_hash",
+    "prev",
+    "prev_wave",
+    "sig"
+  ],
+  "properties": {
+    "spec": {
+      "const": "rapp/1"
+    },
+    "kind": {
+      "const": "rar.review.rev-13"
+    },
+    "stream_id": {
+      "type": "string",
+      "pattern": "^rappid:@kody-w/rar-installer-troubleshooter:[0-9a-f]{64}$"
+    },
+    "seq": {
+      "const": 0
+    },
+    "utc": {
+      "const": "2026-09-01T01:27:57.211Z"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 13,
+      "maxProperties": 13,
+      "required": [
+        "revision",
+        "candidate",
+        "identity",
+        "version",
+        "target_main",
+        "source_sha256",
+        "skill_sha256",
+        "skill_forge",
+        "fixture",
+        "safety",
+        "invariants",
+        "artifacts",
+        "teams"
+      ],
+      "properties": {
+        "revision": {
+          "const": 13
+        },
+        "candidate": {
+          "const": "rapp-roadside"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "target_main": {
+          "const": "kody-w/rapp-roadside@main"
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "skill_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "skill_forge": {
+          "const": "PASS"
+        },
+        "fixture": {
+          "type": "object"
+        },
+        "safety": {
+          "type": "object"
+        },
+        "invariants": {
+          "type": "object"
+        },
+        "artifacts": {
+          "type": "array"
+        },
+        "teams": {
+          "type": "object"
+        }
+      }
+    },
+    "payload_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "frame_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "prev": {
+      "type": "null"
+    },
+    "prev_wave": {
+      "type": "null"
+    },
+    "sig": {
+      "type": "null"
+    }
+  }
+}

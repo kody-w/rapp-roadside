@@ -1,0 +1,75 @@
+{
+  "schema": "rar-installer-troubleshooter/capability-1",
+  "name": "RappRoadside",
+  "display_name": "RAPP Roadside",
+  "repository": "https://github.com/kody-w/rapp-roadside",
+  "license": "MIT",
+  "telemetry": false,
+  "participation": "voluntary",
+  "entrypoint": "rar_installer_troubleshooter_agent.py",
+  "runner": "scripts/run_agent.py",
+  "lock": "rapp/agent.lock.json",
+  "lifecycle": "rapp/lifecycle.json",
+  "closed_loop": "rapp/closed-loop.json",
+  "closed_loop_name": "RAPP Roadside Closed Loop",
+  "issue_signature_domain": "rapp-roadside:issue-signature/v1",
+  "customer_confirmation_operation": "confirm_release",
+  "pit_crew_soak_order": [
+    "Canary",
+    "Nightly",
+    "Alpha",
+    "Beta"
+  ],
+  "operations": [
+    "capability",
+    "diagnose",
+    "prepare_repair",
+    "fix_copy",
+    "retest",
+    "confirm_release"
+  ],
+  "one_bounded_next_action": true,
+  "timeout_seconds": {
+    "minimum": 1,
+    "maximum": 300
+  },
+  "credentials_collected": false,
+  "external_network_default": false,
+  "loopback_probe_requires_explicit_flag": true,
+  "source_mutation": false,
+  "fix_target": "new-sanitized-sibling-copy",
+  "stable_main_identity": "kody-w/rapp-roadside@main",
+  "maintainer_system": "RAPP Pit Crew",
+  "machine_issue_artifact": "Roadside Frame",
+  "protocol_schema_ids_retained": true,
+  "rar_install_remove_reversible": true,
+  "unknown_unknowns": {
+    "hostile_reporting_ai_text_logs": true,
+    "attachment_allowlist_and_hashes": true,
+    "observed_inferred_partition": true,
+    "human_approved_reversible_repair": true,
+    "platform_policy_unknowns_exposed": true,
+    "exact_ring_source_dependency_catalog_bytes": true,
+    "exact_replay": true,
+    "dedupe_rate_ttl_correlation_quarantine": true,
+    "pit_crew_canary_nightly_alpha_beta_gates": true,
+    "bounded_sharded_cells": true,
+    "measured_backpressure": true,
+    "global_raw_data_store": false,
+    "global_lock": false,
+    "infinity_claim": false
+  },
+  "maintainer_change_path": "isolated-worktree-test-release-merge",
+  "direct_push_main": false,
+  "wire": {
+    "method": "POST",
+    "path": "/chat",
+    "request_field": "user_input",
+    "success_keys": [
+      "response",
+      "agent_logs",
+      "session_id"
+    ]
+  },
+  "grail_modified": false
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:customer-confirmation:1",
+  "title": "RAPP Roadside customer confirmation and verified resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "issue_signature",
+    "failure_reasons",
+    "learning_quantum",
+    "next_action",
+    "automatic_actions",
+    "telemetry",
+    "network_used",
+    "confirmation_id"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rapp-roadside/customer-confirmation-1"
+    },
+    "status": {
+      "enum": [
+        "CONFIRMED",
+        "FAIL"
+      ]
+    },
+    "issue_signature": {
+      "type": "string"
+    },
+    "failure_reasons": {
+      "type": "array"
+    },
+    "learning_quantum": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "next_action": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "automatic_actions": {
+      "type": "object"
+    },
+    "telemetry": {
+      "const": false
+    },
+    "network_used": {
+      "const": false
+    },
+    "confirmation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

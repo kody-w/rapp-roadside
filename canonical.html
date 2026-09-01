@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAPP Roadside — canonical candidate</title>
+<style>
+:root{color-scheme:light dark;--ink:#172033;--panel:#f3f6fb;--line:#c8d1e0;--accent:#5847d8}
+@media(prefers-color-scheme:dark){:root{--ink:#eef2fa;--panel:#171b25;--line:#394154;--accent:#aa9fff}}
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 system-ui,sans-serif;color:var(--ink)}
+main{width:min(960px,calc(100% - 32px));margin:40px auto 80px}h1{font-size:clamp(2rem,7vw,4.5rem);line-height:1;margin:.2em 0}
+.eyebrow{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+section{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:22px;margin:20px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.pass{font-weight:800;color:#168366}li{margin:.45rem 0}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">RAPP/Toasted local review candidate</div>
+<h1>RAPP Roadside</h1>
+<p>Public MIT project:
+<a href="https://github.com/kody-w/rapp-roadside">github.com/kody-w/rapp-roadside</a>.
+Copyright © 2026 kody-w. No telemetry; network access is off by default.</p>
+<p>One sanitized observation. One bounded action. Optional repair in a copy.
+The same exact retest. No credentials, external network, upload, or public action.</p>
+<section>
+<h2>Canonical identity</h2>
+<p>Retained compatibility protocol identity:
+<code>rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b</code></p>
+<p>Stable target: <code>kody-w/rapp-roadside@main</code>. RAPP Pit Crew
+owns maintainer intake, reproduction, fix, retest, and release through an
+isolated feature/fix worktree and release merge, never a direct push.</p>
+</section>
+<section>
+<h2>Verified runner</h2>
+<pre>python3 scripts/run_agent.py --preflight
+python3 scripts/run_agent.py --json '{"operation":"diagnose","observation_path":"observations.json"}'</pre>
+<p>The runner checks <code>rapp/agent.lock.json</code> before import.</p>
+</section>
+<section>
+<h2>Invariant</h2>
+<ul>
+<li>Preserve the Grail/kernel.</li>
+<li>Preserve synchronous <code>POST /chat</code> with <code>user_input</code>.</li>
+<li>No sibling REST endpoint.</li>
+<li>No source mutation; allow-listed copy repairs only.</li>
+<li>Reporting-AI text and logs are hostile data; embedded instructions never run.</li>
+<li>Attachments are allowlisted and hash-only in the Roadside Frame.</li>
+<li>Exact replay and ring/source/dependency/catalog/installer bytes are bound.</li>
+<li>Repairs require a human-approved reversible copy binding.</li>
+<li>Duplicate, stale, rate-exceeded, or correlated reports are quarantined.</li>
+<li>The RAPP Roadside Closed Loop requires the exact installed release binding,
+bounded copy reproduction, approved reversible repair, exact retest, inert
+embedded Roadside Frame, Pit Crew soak, and customer confirmation.</li>
+<li>Parent RAR review owns publication.</li>
+</ul>
+</section>
+<section>
+<h2>Horizontal cellular scaling</h2>
+<p>RAPP Roadside adds bounded on-device cells and shards RAPP Pit Crew queues
+by verified issue signature. It reports measured backpressure and exchanges
+only verified signatures, Roadside Frames, and aggregate evidence. It uses no
+global raw-data store, no global lock, and makes no infinity claim.</p>
+<p>Novel verified confirmations emit inert records for the autonomous Data
+Bakery. Duplicates aggregate evidence without re-mining. No automatic network
+submission occurs.</p>
+</section>
+<section>
+<h2>Skill-aware hosts</h2>
+<p>Copilot CLI and Claude Code run the verified runner. Scout loads this skill
+directory and prefers local verified execution. Cowork uploads the export ZIP
+with companions and reviews its Skill Report. Hosts without local execution
+must report that limitation rather than simulate a diagnosis.</p>
+</section>
+<section>
+<h2>Teams handoff</h2>
+<p>No Teams post is automatic. The parent verifies evidence and ZIP hashes,
+then privately shares the ZIP, <code>share with kody.md</code>,
+<code>issue.json</code>, and the Roadside Frame
+<code>roadside-frame.json</code>. RAR publication
+remains a separate parent-owned action.</p>
+</section>
+<p class="pass">Acceptance target: Skill Forge PASS + deterministic synthetic fixture PASS.</p>
+</main>
+</body>
+</html>

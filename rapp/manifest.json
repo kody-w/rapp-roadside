@@ -1,0 +1,30 @@
+{
+  "canonical_agent_name": "RappRoadside",
+  "closed_loop": "closed-loop.json",
+  "closed_loop_name": "RAPP Roadside Closed Loop",
+  "copyright": "2026 kody-w",
+  "dependencies": [
+    "@rapp/basic_agent"
+  ],
+  "display_name": "RAPP Roadside",
+  "entrypoint": "../rar_installer_troubleshooter_agent.py",
+  "grail_modified": false,
+  "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
+  "issue_signature_domain": "rapp-roadside:issue-signature/v1",
+  "license": "MIT",
+  "machine_issue_artifact": "Roadside Frame",
+  "maintainer_system": "RAPP Pit Crew",
+  "name": "@kody-w/rar_installer_troubleshooter_agent",
+  "network_default": false,
+  "participation": "voluntary",
+  "protocol_agent_name_retained": true,
+  "protocol_identity_retained": true,
+  "repository": "https://github.com/kody-w/rapp-roadside",
+  "requires_env": [],
+  "schema": "rapp-agent/1.0",
+  "skill_sha256": "b0316149fac89d1f20b8e451bc9a29f3601b794f6255bb1fc489c6f587416125",
+  "source_sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d",
+  "telemetry": false,
+  "version": "1.0.0",
+  "wire": "POST /chat"
+}

@@ -1,0 +1,106 @@
+{
+  "acceptance": [
+    "Skill Forge PASS",
+    "Synthetic fixture report byte-deterministic",
+    "exact retest PASS",
+    "one action with no alternatives",
+    "no credential collection",
+    "no external network or public action",
+    "Grail unchanged",
+    "POST /chat preserved",
+    "hostile reporting-AI text and logs never executed",
+    "attachments allowlisted and hash-only",
+    "exact replay and supply-chain bytes bound",
+    "dedupe, rate, TTL, and correlation quarantine",
+    "human-approved reversible copy repair",
+    "reversible RAR install/remove",
+    "isolated-worktree Canary/Nightly/Alpha/Beta release gates",
+    "bounded cellular scaling with measured backpressure",
+    "no global raw-data store or global lock",
+    "no infinity claim",
+    "RAPP Roadside Closed Loop state machines verified",
+    "issue signature excludes identity and raw logs",
+    "inert share with embedded Roadside Frame",
+    "customer confirmation gates the verified resolution record"
+  ],
+  "actual": "At 95 seconds, health is starting while the known dependency installation stage is still making forward progress.",
+  "attachments": [
+    "share with kody.md",
+    "roadside-frame.json",
+    "rev-13-frame.json",
+    "evidence/synthetic-report.json",
+    "evidence/synthetic-retest.json",
+    "evidence/skill-forge.json",
+    "evidence/cross-platform-matrix.json",
+    "evidence/mutation-matrix.json",
+    "evidence/unknown-unknowns-matrix.json",
+    "evidence/closed-loop-matrix.json",
+    "evidence/fresh-clone-test.json",
+    "evidence/public-audit.json",
+    "unknown-unknowns-coverage.json",
+    "rapp/lifecycle.json",
+    "rapp/closed-loop.json",
+    "LICENSE",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "docs/CROSS-AGENT.md"
+  ],
+  "body_markdown": "The synthetic Windows setup was still in `agent-dependency-install` at 95 seconds. RAPP Roadside correctly avoids a reinstall loop and returns one action: wait 120 seconds, then retest local health and canonical `POST /chat`. The after fixture passes every carried-forward assertion. Any source fix transfers to RAPP Pit Crew. Unknown-unknown controls quarantine hostile or stale reports, bind exact bytes/replay, require human-approved reversible repairs, and use bounded sharded cells. No source, Grail, credential, network, Teams, Git, or public action occurred.",
+  "candidate": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
+  "closed_loop": "RAPP Roadside Closed Loop",
+  "expected": "Return only bounded-wait-and-local-retest; after 120 seconds, require health 200/ok and POST /chat success fields.",
+  "fixture": {
+    "after": "fixtures/synthetic-slow-setup/after.json",
+    "before": "fixtures/synthetic-slow-setup/before.json",
+    "case_id": "synthetic-slow-setup",
+    "report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
+    "result": "PASS",
+    "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
+    "tests_run": 80
+  },
+  "labels": [
+    "installer",
+    "local-first",
+    "rapp-pit-crew",
+    "rapp-roadside",
+    "stability",
+    "windows"
+  ],
+  "machine_issue_artifact": "Roadside Frame",
+  "maintainer_flow": {
+    "change_path": "isolated feature/fix worktree -> tests -> release merge",
+    "direct_push_main": false,
+    "stages": [
+      "intake",
+      "reproduce",
+      "fix",
+      "retest",
+      "release"
+    ],
+    "system": "RAPP Pit Crew",
+    "target": "kody-w/rapp-roadside@main"
+  },
+  "public_release": {
+    "copyright": "2026 kody-w",
+    "license": "MIT",
+    "network_default": false,
+    "participation": "voluntary",
+    "publication_performed": false,
+    "repository": "https://github.com/kody-w/rapp-roadside",
+    "telemetry": false
+  },
+  "reproduction": [
+    "python3 scripts/run_agent.py --json '{\"operation\":\"diagnose\",\"observation_path\":\"fixtures/synthetic-slow-setup/before.json\"}'",
+    "python3 scripts/run_agent.py --json '{\"operation\":\"retest\",\"diagnosis_path\":\"evidence/synthetic-report.json\",\"observation_path\":\"fixtures/synthetic-slow-setup/after.json\"}'"
+  ],
+  "safety": {
+    "credentials_collected": false,
+    "external_network": false,
+    "grail_modified": false,
+    "public_action": false,
+    "source_modified": false
+  },
+  "schema": "rar-local-issue/1.0",
+  "support_system": "RAPP Roadside",
+  "title": "RAPP Roadside: first boot appears stuck while agent dependencies are still progressing"
+}

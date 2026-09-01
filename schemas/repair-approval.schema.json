@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:repair-approval:1",
+  "title": "RAPP Roadside reversible repair approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "human_approved",
+    "action_id",
+    "source_fingerprint",
+    "copy_target_sha256",
+    "reversible",
+    "activation"
+  ],
+  "properties": {
+    "human_approved": {
+      "type": "boolean"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "source_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "copy_target_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reversible": {
+      "const": true
+    },
+    "activation": {
+      "const": "copy-only-no-activation"
+    }
+  }
+}

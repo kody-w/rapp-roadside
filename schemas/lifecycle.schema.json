@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:lifecycle:1",
+  "title": "RAPP Roadside reversible RAR lifecycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "skill_name",
+    "display_name",
+    "repository",
+    "license",
+    "installer",
+    "operations",
+    "integrity",
+    "install",
+    "remove",
+    "catalog_requirement",
+    "global_lock",
+    "network",
+    "telemetry",
+    "publication"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rar-skill-lifecycle/1.0"
+    },
+    "skill_name": {
+      "const": "rapp-roadside"
+    },
+    "display_name": {
+      "const": "RAPP Roadside"
+    },
+    "repository": {
+      "const": "https://github.com/kody-w/rapp-roadside"
+    },
+    "license": {
+      "const": "MIT"
+    },
+    "installer": {
+      "const": "scripts/rar_lifecycle.py"
+    },
+    "operations": {
+      "const": [
+        "install",
+        "verify",
+        "remove"
+      ]
+    },
+    "integrity": {
+      "const": "rapp/package.lock.json"
+    },
+    "install": {
+      "type": "object"
+    },
+    "remove": {
+      "type": "object"
+    },
+    "catalog_requirement": {
+      "type": "string"
+    },
+    "global_lock": {
+      "const": false
+    },
+    "network": {
+      "const": false
+    },
+    "telemetry": {
+      "const": false
+    },
+    "publication": {
+      "const": false
+    }
+  }
+}

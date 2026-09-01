@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:release-frame:1",
+  "title": "RAPP Pit Crew release frame",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "issue_signature",
+    "roadside_frame_hash",
+    "affected_commit",
+    "fix_sha256",
+    "regression_test_sha256",
+    "rings",
+    "merge_target",
+    "human_approved"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rapp-roadside/release-frame-1"
+    },
+    "issue_signature": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "roadside_frame_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "affected_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "fix_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "regression_test_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rings": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "artifact_sha256",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "Canary",
+              "Nightly",
+              "Alpha",
+              "Beta"
+            ]
+          },
+          "artifact_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "status": {
+            "const": "PASS"
+          }
+        }
+      }
+    },
+    "merge_target": {
+      "const": "main"
+    },
+    "human_approved": {
+      "const": true
+    }
+  }
+}

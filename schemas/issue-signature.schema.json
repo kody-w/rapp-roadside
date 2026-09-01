@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:issue-signature:1",
+  "title": "RAPP Roadside domain-separated issue signature",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "domain",
+    "sha256",
+    "fields",
+    "queue_key",
+    "dedupe_key",
+    "identity_included",
+    "raw_logs_included"
+  ],
+  "properties": {
+    "domain": {
+      "const": "rapp-roadside:issue-signature/v1"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "installer_release_frame_version",
+        "installer_release_frame_sha256",
+        "ring",
+        "ring_manifest_sha256",
+        "source_commit",
+        "installer_sha256s",
+        "phase",
+        "fixed_code",
+        "environment_classes",
+        "input_hashes"
+      ]
+    },
+    "queue_key": {
+      "const": true
+    },
+    "dedupe_key": {
+      "const": true
+    },
+    "identity_included": {
+      "const": false
+    },
+    "raw_logs_included": {
+      "const": false
+    }
+  }
+}

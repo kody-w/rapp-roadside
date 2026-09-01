@@ -1,0 +1,128 @@
+{
+  "schema": "rapp-roadside/closed-loop-1",
+  "name": "RAPP Roadside Closed Loop",
+  "repository": "https://github.com/kody-w/rapp-roadside",
+  "participation": "voluntary",
+  "customer_state_machine": {
+    "initial": "identify-installed-release",
+    "terminal": [
+      "confirmed-learning-quantum",
+      "stopped-without-change",
+      "rolled-back"
+    ],
+    "states": [
+      "identify-installed-release",
+      "diagnose-locally",
+      "reproduce-bounded-copy",
+      "create-reversible-repair-plan",
+      "await-human-repair-approval",
+      "apply-approved-local-safe-repair",
+      "exact-retest",
+      "user-review",
+      "export-inert-share-with-kody",
+      "await-pit-crew-release",
+      "rerun-identical-released-test",
+      "confirmed-learning-quantum"
+    ],
+    "required_order": [
+      "identify-installed-release",
+      "diagnose-locally",
+      "reproduce-bounded-copy",
+      "create-reversible-repair-plan",
+      "await-human-repair-approval",
+      "apply-approved-local-safe-repair",
+      "exact-retest",
+      "user-review",
+      "export-inert-share-with-kody",
+      "await-pit-crew-release",
+      "rerun-identical-released-test",
+      "confirmed-learning-quantum"
+    ],
+    "installed_release_binding": [
+      "installer release frame version and SHA-256",
+      "ring and ring-manifest SHA-256",
+      "public commit identity",
+      "raw installer byte SHA-256 values"
+    ],
+    "export": {
+      "file": "share with kody.md",
+      "inert_markdown": true,
+      "embedded_artifact": "Roadside Frame",
+      "automatic_send": false
+    }
+  },
+  "pit_crew_state_machine": {
+    "initial": "import-markdown-as-untrusted-data",
+    "states": [
+      "import-markdown-as-untrusted-data",
+      "verify-roadside-frame-attachments-version",
+      "reproduce-on-maintainer-device",
+      "request-at-most-one-bounded-follow-up-if-needed",
+      "create-isolated-worktree-at-exact-affected-main-commit",
+      "import-reproduction-as-regression-test",
+      "patch",
+      "exact-retest",
+      "cross-platform-matrix",
+      "canary-soak",
+      "nightly-soak",
+      "alpha-soak",
+      "beta-soak",
+      "human-approved-release-merge-to-main",
+      "emit-release-frame",
+      "customer-reruns-identical-test",
+      "confirmation-becomes-final-learning-quantum"
+    ],
+    "follow_up_limit": 1,
+    "soak_order": [
+      "Canary",
+      "Nightly",
+      "Alpha",
+      "Beta"
+    ],
+    "release_frame_links": [
+      "issue signature",
+      "Roadside Frame hash",
+      "fix SHA-256",
+      "test SHA-256",
+      "ring artifact SHA-256 values"
+    ]
+  },
+  "issue_signature": {
+    "domain": "rapp-roadside:issue-signature/v1",
+    "algorithm": "sha256(utf8(domain) || 0x0A || JCS(fields))",
+    "fields": [
+      "installer release frame version and SHA-256",
+      "ring and ring-manifest SHA-256",
+      "public commit identity",
+      "raw installer byte SHA-256 values",
+      "phase",
+      "fixed code",
+      "environment classes",
+      "input and before-state hashes"
+    ],
+    "excluded": [
+      "person or account identity",
+      "raw reporting-AI text",
+      "raw logs",
+      "attachment bodies",
+      "private paths"
+    ],
+    "queue_key": true,
+    "dedupe_key": true
+  },
+  "learning": {
+    "destination": "maintainer improvement queue",
+    "automatic_network_send": false,
+    "novel_verified_result": "emit an inert verified learning-quantum record",
+    "duplicate": "aggregate hash-addressed evidence without re-mining",
+    "failed_confirmation": "do not learn; preserve rollback and mismatch evidence"
+  },
+  "prohibited_automatic_actions": [
+    "Teams send",
+    "Git push",
+    "main edit",
+    "production deployment",
+    "destructive customer repair",
+    "automatic maintainer-queue network submission"
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "schema": "rapp-roadside/unknown-unknowns-coverage-1",
+  "threat_model": "public-rapp-roadside-safety-domains",
+  "support_system": "RAPP Roadside",
+  "closed_loop": "rapp/closed-loop.json",
+  "machine_issue_artifact": "Roadside Frame",
+  "maintainer_system": "RAPP Pit Crew",
+  "principle": "Unrecognized conditions fail safely, preserve bounded hash-addressed evidence, and become named public tests before release.",
+  "coverage_status": "COVERED_BY_LOCAL_MUTATIONS",
+  "domains": [
+    {
+      "id": "01-untrusted-reporting-ai",
+      "applicable": true,
+      "controls": [
+        "reporting-AI text and logs are hostile data",
+        "raw text and raw logs are rejected from the observation schema",
+        "embedded instruction markers quarantine the report",
+        "observed and inferred claim IDs are disjoint",
+        "independent exact replay is required"
+      ],
+      "mutations": [
+        "test_reporting_ai_raw_log_instructions_are_never_accepted",
+        "test_instruction_marker_quarantines_without_execution",
+        "test_observed_and_inferred_claims_must_be_disjoint"
+      ]
+    },
+    {
+      "id": "02-secret-privacy-rights-leakage",
+      "applicable": true,
+      "controls": [
+        "credential-like keys and values are refused",
+        "attachments are allowlisted hash-only metadata",
+        "private paths are absent from reports and quarantine records",
+        "local raw retention defaults to zero"
+      ],
+      "mutations": [
+        "test_sensitive_field_names_are_refused",
+        "test_credential_like_values_are_refused",
+        "test_attachments_are_hash_only_and_allowlisted",
+        "test_attachment_hasher_binds_real_bytes_and_refuses_types",
+        "test_quarantine_companion_writes_hash_only_record"
+      ]
+    },
+    {
+      "id": "03-destructive-or-wrong-repair",
+      "applicable": true,
+      "controls": [
+        "read-only diagnosis precedes repair",
+        "prepare_repair binds exact action, source fingerprint, and copy target",
+        "fix_copy requires explicit human approval",
+        "repairs are reversible copy-only with no activation",
+        "source fingerprint is rechecked"
+      ],
+      "mutations": [
+        "test_copy_repair_requires_bound_human_approval",
+        "test_wrong_source_approval_is_refused",
+        "test_executable_fix_changes_copy_not_source",
+        "test_copy_inside_source_is_refused"
+      ]
+    },
+    {
+      "id": "04-environmental-unknowns",
+      "applicable": true,
+      "controls": [
+        "OS build, architecture, shell, filesystem, locale, clock, policy, proxy, certificate, and security-product states are explicit",
+        "unknown critical capability states produce a bounded capability probe",
+        "no catch-all diagnosis is used"
+      ],
+      "mutations": [
+        "test_platform_and_policy_unknowns_are_explicit",
+        "test_platform_aliases_are_stable",
+        "test_invalid_platform_is_refused"
+      ]
+    },
+    {
+      "id": "05-version-ring-and-supply-chain-drift",
+      "applicable": true,
+      "controls": [
+        "ring manifest, source commit/tree, dependency lock, catalog, and installer bytes are SHA-256 bound",
+        "installer mirrors remain byte-identical",
+        "package and agent locks are verified",
+        "signed catalog verification remains a parent RAR client requirement"
+      ],
+      "mutations": [
+        "test_exact_byte_binding_is_required",
+        "test_synthetic_binding_hashes_match_real_fixture_bytes",
+        "test_wrong_installer_frame_version_is_quarantined",
+        "test_ring_byte_drift_fails_exact_customer_retest",
+        "test_mirror_fix_is_byte_exact_in_copy",
+        "test_package_lock_records_are_current"
+      ]
+    },
+    {
+      "id": "06-nonreproducible-user-evidence",
+      "applicable": true,
+      "controls": [
+        "sanitized exact argv and logical cwd",
+        "input, before-state, output, and artifact hashes",
+        "phase, duration, output size, and before/after fixture",
+        "private absolute paths quarantine replay",
+        "retest carries forward exact environment and byte bindings"
+      ],
+      "mutations": [
+        "test_exact_replay_rejects_private_absolute_paths",
+        "test_unreproducible_state_is_quarantined",
+        "test_synthetic_exact_retest_passes",
+        "test_retest_fails_without_post_chat_envelope"
+      ]
+    },
+    {
+      "id": "07-support-frame-spam-replay-and-poisoning",
+      "applicable": true,
+      "controls": [
+        "source verification",
+        "frame verification and bounded trust weight",
+        "domain-separated issue signature binds installer frame/version, ring, public commit, raw installer hashes, phase, fixed code, environment classes, and input hashes",
+        "issue signature excludes identity and raw logs",
+        "content-addressed dedupe",
+        "TTL and replay age",
+        "rate and attachment-size caps",
+        "correlation disclosure",
+        "hash-only local quarantine before independent reproduction"
+      ],
+      "mutations": [
+        "test_dedupe_rate_ttl_source_and_correlation_quarantine",
+        "test_stale_report_is_quarantined",
+        "test_replayed_report_is_quarantined",
+        "test_prompt_injection_outside_frame_is_ignored_as_data",
+        "test_instruction_marker_quarantines_without_execution",
+        "test_quarantine_companion_writes_hash_only_record"
+      ]
+    },
+    {
+      "id": "08-fix-regression-and-main-release-risk",
+      "applicable": true,
+      "controls": [
+        "RAPP Pit Crew imports the exact failing replay as a named regression test",
+        "isolated feature/fix worktree",
+        "platform and ring matrices",
+        "clean-machine installer tests",
+        "one-way Canary to Nightly to Alpha to Beta soak",
+        "no-fast-forward release merge and rollback evidence",
+        "no direct push to main"
+      ],
+      "mutations": [
+        "test_pit_crew_release_gates_are_explicit",
+        "test_local_fix_differing_from_released_fix_fails",
+        "test_failed_customer_confirmation_does_not_learn",
+        "test_rollback_must_be_available_and_tested",
+        "test_wrong_ring_order_fails_release_confirmation",
+        "test_successful_confirmation_becomes_final_learning_quantum",
+        "test_direct_main_mutation_is_blocked",
+        "test_linux_launcher_mode_action",
+        "test_macos_installer_mirror_action",
+        "test_windows_post_chat_action"
+      ]
+    },
+    {
+      "id": "09-distribution-and-skill-lifecycle",
+      "applicable": true,
+      "controls": [
+        "checksum-pinned package",
+        "unmanaged targets are never overwritten",
+        "prior managed versions are preserved",
+        "removed versions are retained",
+        "remove restores the prior version when present",
+        "local verify detects drift"
+      ],
+      "mutations": [
+        "test_fresh_install_verify_remove_preserves_removed_bytes",
+        "test_prior_managed_version_is_restored_on_remove",
+        "test_unmanaged_target_is_never_overwritten",
+        "test_tampered_managed_install_fails_verification"
+      ]
+    },
+    {
+      "id": "10-scale-cost-and-coordination",
+      "applicable": true,
+      "controls": [
+        "bounded per-device Roadside cells",
+        "issue-signature sharding",
+        "measured queue depth, threshold, maximum, and utilization",
+        "local backpressure and hash-only deferral",
+        "hot and negative cache measurements",
+        "rare/protected/normal fairness lanes",
+        "measured marginal information gain",
+        "verified signatures, Roadside Frames, and aggregates only",
+        "no global raw-data store",
+        "no global lock",
+        "no unbounded or infinity claim"
+      ],
+      "mutations": [
+        "test_cell_backpressure_is_measured_and_sharded",
+        "test_global_lock_or_raw_store_is_quarantined",
+        "test_duplicate_confirmation_aggregates_without_remining"
+      ]
+    }
+  ],
+  "scaling": {
+    "claim": "horizontal-cellular-scaling-with-measured-backpressure",
+    "unbounded_or_infinite_claim": false,
+    "global_lock": false,
+    "global_raw_data_store": false,
+    "shared_globally": [
+      "verified issue signatures",
+      "Roadside Frames",
+      "aggregate evidence"
+    ]
+  },
+  "evidence": [
+    "evidence/skill-forge.json",
+    "evidence/fresh-clone-test.json",
+    "evidence/public-audit.json",
+    "evidence/test-results.txt",
+    "evidence/unknown-unknowns-matrix.json",
+    "evidence/closed-loop-matrix.json",
+    "evidence/cross-platform-matrix.json",
+    "evidence/mutation-matrix.json",
+    "evidence/synthetic-report.json",
+    "evidence/synthetic-retest.json"
+  ]
+}

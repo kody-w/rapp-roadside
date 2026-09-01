@@ -1,0 +1,46 @@
+{
+  "cases": [
+    {
+      "actual_action": "recollect-local-only-observation",
+      "expected_action": "recollect-local-only-observation",
+      "mutation": "external-network",
+      "passed": true
+    },
+    {
+      "actual_action": "prepare-grail-restoration-handoff",
+      "expected_action": "prepare-grail-restoration-handoff",
+      "mutation": "grail-change",
+      "passed": true
+    },
+    {
+      "actual_action": "prepare-isolated-worktree-handoff",
+      "expected_action": "prepare-isolated-worktree-handoff",
+      "mutation": "direct-main",
+      "passed": true
+    },
+    {
+      "actual_action": "verify-python-3-11",
+      "expected_action": "verify-python-3-11",
+      "mutation": "old-python",
+      "passed": true
+    },
+    {
+      "actual_action": "capture-local-stage-snapshot",
+      "expected_action": "capture-local-stage-snapshot",
+      "mutation": "past-wait-bound",
+      "passed": true
+    },
+    {
+      "actual_action": "retest-canonical-post-chat",
+      "expected_action": "retest-canonical-post-chat",
+      "mutation": "wrong-chat-field",
+      "passed": true
+    }
+  ],
+  "credentials_collected": false,
+  "external_network_used": false,
+  "maintainer_system": "RAPP Pit Crew",
+  "schema": "rar-mutation-evidence/1.0",
+  "status": "PASS",
+  "support_system": "RAPP Roadside"
+}

@@ -1,0 +1,26 @@
+{
+  "cases": [
+    {
+      "actual_action": "bounded-wait-and-local-retest",
+      "expected_action": "bounded-wait-and-local-retest",
+      "passed": true,
+      "platform": "windows"
+    },
+    {
+      "actual_action": "restore-launcher-executable-copy",
+      "expected_action": "restore-launcher-executable-copy",
+      "passed": true,
+      "platform": "linux"
+    },
+    {
+      "actual_action": "synchronize-installer-mirrors-copy",
+      "expected_action": "synchronize-installer-mirrors-copy",
+      "passed": true,
+      "platform": "macos"
+    }
+  ],
+  "maintainer_system": "RAPP Pit Crew",
+  "schema": "rar-cross-platform-evidence/1.0",
+  "status": "PASS",
+  "support_system": "RAPP Roadside"
+}

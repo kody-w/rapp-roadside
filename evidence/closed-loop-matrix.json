@@ -1,0 +1,75 @@
+{
+  "automatic_data_bakery_network_send": false,
+  "automatic_main_edit": false,
+  "automatic_production_deploy": false,
+  "automatic_push": false,
+  "automatic_teams_send": false,
+  "cases": [
+    {
+      "actual_status": "report-quarantined",
+      "expected_reason": "installer-frame-version-mismatch",
+      "expected_status": "report-quarantined",
+      "mutation": "wrong-version",
+      "passed": true
+    },
+    {
+      "actual_status": "report-quarantined",
+      "expected_reason": "stale-or-invalid-ttl",
+      "expected_status": "report-quarantined",
+      "mutation": "stale-report",
+      "passed": true
+    },
+    {
+      "actual_status": "report-quarantined",
+      "expected_reason": "duplicate-report",
+      "expected_status": "report-quarantined",
+      "mutation": "replayed-report",
+      "passed": true
+    },
+    {
+      "actual_status": "report-quarantined",
+      "expected_reason": "replay-manifest-invalid",
+      "expected_status": "report-quarantined",
+      "mutation": "unreproducible-state",
+      "passed": true
+    },
+    {
+      "actual_status": "FAIL",
+      "expected_reason": null,
+      "expected_status": "FAIL",
+      "mutation": "ring-byte-drift",
+      "passed": true
+    },
+    {
+      "actual_status": "FAIL",
+      "expected_reason": "local-fix-differs-from-released-fix",
+      "expected_status": "FAIL",
+      "mutation": "local-fix-differs-from-release",
+      "passed": true
+    },
+    {
+      "actual_status": "FAIL",
+      "expected_reason": "customer-confirmation-failed",
+      "expected_status": "FAIL",
+      "mutation": "failed-customer-confirmation",
+      "passed": true
+    },
+    {
+      "actual_status": "FAIL",
+      "expected_reason": "rollback-not-proven",
+      "expected_status": "FAIL",
+      "mutation": "rollback-not-proven",
+      "passed": true
+    },
+    {
+      "actual_status": "CONFIRMED",
+      "expected_reason": null,
+      "expected_status": "CONFIRMED",
+      "mutation": "confirmed-learning-quantum",
+      "passed": true
+    }
+  ],
+  "destructive_customer_repair": false,
+  "schema": "rapp-roadside/closed-loop-evidence-1",
+  "status": "PASS"
+}

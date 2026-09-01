@@ -1,0 +1,37 @@
+{
+  "case_id": "windows-post-chat",
+  "platform": "windows",
+  "setup_elapsed_seconds": 200,
+  "setup_stage": "ready",
+  "source": {
+    "present": true
+  },
+  "launcher": {
+    "present": true,
+    "executable": true
+  },
+  "python": {
+    "version": "3.11.9"
+  },
+  "health": {
+    "status": "ok",
+    "http_status": 200
+  },
+  "chat": {
+    "method": "GET",
+    "path": "/chat/run",
+    "request_field": "messages",
+    "http_status": 404,
+    "response_keys": []
+  },
+  "installers": {
+    "docs_mirrors_match": true
+  },
+  "repository": {
+    "direct_main_change_requested": false
+  },
+  "safety": {
+    "external_network_observed": false,
+    "grail_modified": false
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "case_id": "macos-installer-drift",
+  "platform": "macos",
+  "setup_elapsed_seconds": 20,
+  "setup_stage": "starting-server",
+  "source": {
+    "present": true
+  },
+  "launcher": {
+    "present": true,
+    "executable": true
+  },
+  "python": {
+    "version": "3.12.2"
+  },
+  "health": {
+    "status": "unreachable",
+    "http_status": null
+  },
+  "chat": {
+    "method": "POST",
+    "path": "/chat",
+    "request_field": "user_input",
+    "http_status": null,
+    "response_keys": []
+  },
+  "installers": {
+    "docs_mirrors_match": false
+  },
+  "repository": {
+    "direct_main_change_requested": false
+  },
+  "safety": {
+    "external_network_observed": false,
+    "grail_modified": false
+  }
+}

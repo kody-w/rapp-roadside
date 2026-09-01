@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:closed-loop:1",
+  "title": "RAPP Roadside Closed Loop",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "name",
+    "repository",
+    "participation",
+    "customer_state_machine",
+    "pit_crew_state_machine",
+    "issue_signature",
+    "learning",
+    "prohibited_automatic_actions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rapp-roadside/closed-loop-1"
+    },
+    "name": {
+      "const": "RAPP Roadside Closed Loop"
+    },
+    "repository": {
+      "const": "https://github.com/kody-w/rapp-roadside"
+    },
+    "participation": {
+      "const": "voluntary"
+    },
+    "customer_state_machine": {
+      "type": "object"
+    },
+    "pit_crew_state_machine": {
+      "type": "object"
+    },
+    "issue_signature": {
+      "type": "object"
+    },
+    "learning": {
+      "type": "object"
+    },
+    "prohibited_automatic_actions": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true
+    }
+  }
+}

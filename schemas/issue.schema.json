@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rar-installer-troubleshooter:issue:1",
+  "title": "Local RAPP Roadside issue and RAPP Pit Crew handoff",
+  "description": "Human-readable issue payload paired with the machine Roadside Frame.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "support_system",
+    "machine_issue_artifact",
+    "closed_loop",
+    "public_release",
+    "title",
+    "candidate",
+    "labels",
+    "body_markdown",
+    "fixture",
+    "reproduction",
+    "actual",
+    "expected",
+    "acceptance",
+    "safety",
+    "maintainer_flow",
+    "attachments"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rar-local-issue/1.0"
+    },
+    "support_system": {
+      "const": "RAPP Roadside"
+    },
+    "machine_issue_artifact": {
+      "const": "Roadside Frame"
+    },
+    "closed_loop": {
+      "const": "RAPP Roadside Closed Loop"
+    },
+    "public_release": {
+      "type": "object",
+      "required": [
+        "repository",
+        "license",
+        "copyright",
+        "telemetry",
+        "network_default",
+        "publication_performed"
+        ,"participation"
+      ],
+      "properties": {
+        "repository": {
+          "const": "https://github.com/kody-w/rapp-roadside"
+        },
+        "license": {
+          "const": "MIT"
+        },
+        "copyright": {
+          "const": "2026 kody-w"
+        },
+        "telemetry": {
+          "const": false
+        },
+        "network_default": {
+          "const": false
+        },
+        "publication_performed": {
+          "const": false
+        },
+        "participation": {
+          "const": "voluntary"
+        }
+      }
+    },
+    "title": {
+      "type": "string"
+    },
+    "candidate": {
+      "type": "string"
+    },
+    "labels": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "body_markdown": {
+      "type": "string"
+    },
+    "fixture": {
+      "type": "object"
+    },
+    "reproduction": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "actual": {
+      "type": "string"
+    },
+    "expected": {
+      "type": "string"
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "safety": {
+      "type": "object"
+    },
+    "maintainer_flow": {
+      "type": "object",
+      "required": [
+        "system"
+      ],
+      "properties": {
+        "system": {
+          "const": "RAPP Pit Crew"
+        }
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

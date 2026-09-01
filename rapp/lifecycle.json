@@ -1,0 +1,30 @@
+{
+  "schema": "rar-skill-lifecycle/1.0",
+  "skill_name": "rapp-roadside",
+  "display_name": "RAPP Roadside",
+  "repository": "https://github.com/kody-w/rapp-roadside",
+  "license": "MIT",
+  "installer": "scripts/rar_lifecycle.py",
+  "operations": [
+    "install",
+    "verify",
+    "remove"
+  ],
+  "integrity": "rapp/package.lock.json",
+  "install": {
+    "staging": "local-state/staging",
+    "atomic_activation": "same-filesystem-rename",
+    "unmanaged_target_overwrite": false,
+    "prior_version_preserved": true
+  },
+  "remove": {
+    "deletes_bytes": false,
+    "removed_version_preserved": true,
+    "prior_version_restored": true
+  },
+  "catalog_requirement": "signed-catalog-hash-must-be-verified-by-parent-rar-client",
+  "global_lock": false,
+  "network": false,
+  "telemetry": false,
+  "publication": false
+}

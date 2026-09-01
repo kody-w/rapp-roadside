@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rar-installer-troubleshooter:export:1",
+  "title": "Local RAPP Roadside review export manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "candidate",
+    "display_name",
+    "maintainer_system",
+    "machine_issue_artifact",
+    "closed_loop",
+    "repository",
+    "license",
+    "copyright",
+    "telemetry",
+    "network_default",
+    "participation",
+    "identity",
+    "protocol_identity_retained",
+    "zip",
+    "zip_sha256",
+    "files",
+    "publication"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rar-local-export/1.0"
+    },
+    "candidate": {
+      "const": "rapp-roadside"
+    },
+    "display_name": {
+      "const": "RAPP Roadside"
+    },
+    "maintainer_system": {
+      "const": "RAPP Pit Crew"
+    },
+    "machine_issue_artifact": {
+      "const": "Roadside Frame"
+    },
+    "closed_loop": {
+      "const": "rapp/closed-loop.json"
+    },
+    "repository": {
+      "const": "https://github.com/kody-w/rapp-roadside"
+    },
+    "license": {
+      "const": "MIT"
+    },
+    "copyright": {
+      "const": "2026 kody-w"
+    },
+    "telemetry": {
+      "const": false
+    },
+    "network_default": {
+      "const": false
+    },
+    "participation": {
+      "const": "voluntary"
+    },
+    "identity": {
+      "type": "string"
+    },
+    "protocol_identity_retained": {
+      "const": true
+    },
+    "zip": {
+      "const": "rapp-roadside.zip"
+    },
+    "zip_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "publication": {
+      "const": "not-performed-parent-review-only"
+    }
+  }
+}

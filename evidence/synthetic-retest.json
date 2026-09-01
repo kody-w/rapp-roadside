@@ -1,0 +1,223 @@
+{
+  "assertions": [
+    {
+      "actual": "ok",
+      "expected": "ok",
+      "passed": true,
+      "path": "health.status"
+    },
+    {
+      "actual": 200,
+      "expected": 200,
+      "passed": true,
+      "path": "health.http_status"
+    },
+    {
+      "actual": "POST",
+      "expected": "POST",
+      "passed": true,
+      "path": "chat.method"
+    },
+    {
+      "actual": "/chat",
+      "expected": "/chat",
+      "passed": true,
+      "path": "chat.path"
+    },
+    {
+      "actual": "user_input",
+      "expected": "user_input",
+      "passed": true,
+      "path": "chat.request_field"
+    },
+    {
+      "actual": 200,
+      "expected": 200,
+      "passed": true,
+      "path": "chat.http_status"
+    },
+    {
+      "actual": [
+        "agent_logs",
+        "response",
+        "session_id"
+      ],
+      "expected": [
+        "response",
+        "agent_logs",
+        "session_id"
+      ],
+      "passed": true,
+      "path": "chat.response_keys"
+    },
+    {
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "path": "safety.grail_modified"
+    },
+    {
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "path": "safety.external_network_observed"
+    },
+    {
+      "actual": "stable-main",
+      "expected": "stable-main",
+      "passed": true,
+      "path": "bindings.ring"
+    },
+    {
+      "actual": "rapp-roadside-installer-frame/1.0",
+      "expected": "rapp-roadside-installer-frame/1.0",
+      "passed": true,
+      "path": "bindings.installer_release_frame_version"
+    },
+    {
+      "actual": "b9c23cbd73beb9fba9ee3e04c9f5073d1c86a1be23ee55c9b5ae4121ba794d19",
+      "expected": "b9c23cbd73beb9fba9ee3e04c9f5073d1c86a1be23ee55c9b5ae4121ba794d19",
+      "passed": true,
+      "path": "bindings.installer_release_frame_sha256"
+    },
+    {
+      "actual": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
+      "expected": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
+      "passed": true,
+      "path": "bindings.ring_manifest_sha256"
+    },
+    {
+      "actual": "0000000000000000000000000000000000000000",
+      "expected": "0000000000000000000000000000000000000000",
+      "passed": true,
+      "path": "bindings.source_commit"
+    },
+    {
+      "actual": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a",
+      "expected": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a",
+      "passed": true,
+      "path": "bindings.source_tree_sha256"
+    },
+    {
+      "actual": "d82764a06aafcba6a91aceac3a626686df3b64ca636b07cc728792d891020602",
+      "expected": "d82764a06aafcba6a91aceac3a626686df3b64ca636b07cc728792d891020602",
+      "passed": true,
+      "path": "bindings.dependency_lock_sha256"
+    },
+    {
+      "actual": "cd580436958c4b2d56068a6541382d508c972987c765420fbc5ae3a787899fb3",
+      "expected": "cd580436958c4b2d56068a6541382d508c972987c765420fbc5ae3a787899fb3",
+      "passed": true,
+      "path": "bindings.catalog_sha256"
+    },
+    {
+      "actual": {
+        "install.cmd": "4066d161da3adcee4c0963094bc937448d45589a0b864bfe0cd3b124a06f5ba3",
+        "install.ps1": "17514fcc407397cfa7434fa6e9095fcdbc89be66ddc9652f1de003f4dec70b3b",
+        "install.sh": "6ecf06f6dbbab6a920b5b208bc7c4069ca266b150d6c00533a00b5975a8417ca"
+      },
+      "expected": {
+        "install.cmd": "4066d161da3adcee4c0963094bc937448d45589a0b864bfe0cd3b124a06f5ba3",
+        "install.ps1": "17514fcc407397cfa7434fa6e9095fcdbc89be66ddc9652f1de003f4dec70b3b",
+        "install.sh": "6ecf06f6dbbab6a920b5b208bc7c4069ca266b150d6c00533a00b5975a8417ca"
+      },
+      "passed": true,
+      "path": "bindings.installer_sha256s"
+    },
+    {
+      "actual": "windows-11-23h2",
+      "expected": "windows-11-23h2",
+      "passed": true,
+      "path": "environment.os_build"
+    },
+    {
+      "actual": "managed-restricted",
+      "expected": "managed-restricted",
+      "passed": true,
+      "path": "environment.managed_policy"
+    },
+    {
+      "actual": "ntfs",
+      "expected": "ntfs",
+      "passed": true,
+      "path": "environment.filesystem"
+    },
+    {
+      "actual": "powershell-7",
+      "expected": "powershell-7",
+      "passed": true,
+      "path": "environment.shell"
+    },
+    {
+      "actual": "ac4eba24708afa85dabce3f3bf9354eac5d7fac705a36fa5843b44df264d7484",
+      "expected": "ac4eba24708afa85dabce3f3bf9354eac5d7fac705a36fa5843b44df264d7484",
+      "passed": true,
+      "path": "cell.shard_key_sha256"
+    },
+    {
+      "actual": [],
+      "expected": "valid exact replay and non-quarantined transport",
+      "passed": true,
+      "path": "hardening.replay_transport_and_quarantine"
+    }
+  ],
+  "byte_bindings": {
+    "catalog_sha256": "cd580436958c4b2d56068a6541382d508c972987c765420fbc5ae3a787899fb3",
+    "dependency_lock_sha256": "d82764a06aafcba6a91aceac3a626686df3b64ca636b07cc728792d891020602",
+    "installer_release_frame_sha256": "b9c23cbd73beb9fba9ee3e04c9f5073d1c86a1be23ee55c9b5ae4121ba794d19",
+    "installer_release_frame_version": "rapp-roadside-installer-frame/1.0",
+    "installer_sha256s": {
+      "install.cmd": "4066d161da3adcee4c0963094bc937448d45589a0b864bfe0cd3b124a06f5ba3",
+      "install.ps1": "17514fcc407397cfa7434fa6e9095fcdbc89be66ddc9652f1de003f4dec70b3b",
+      "install.sh": "6ecf06f6dbbab6a920b5b208bc7c4069ca266b150d6c00533a00b5975a8417ca"
+    },
+    "ring": "stable-main",
+    "ring_manifest_sha256": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51",
+    "source_commit": "0000000000000000000000000000000000000000",
+    "source_tree_sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a"
+  },
+  "case_id": "synthetic-slow-setup",
+  "credentials_collected": false,
+  "diagnosis_report_id": "5556a9eaca5246758d5f17b0c287da440668a9b0ba1cf80440d12a3761c1f237",
+  "external_network_used_by_agent": false,
+  "grail_modified": false,
+  "machine_issue_artifact": "Roadside Frame",
+  "maintainer_system": "RAPP Pit Crew",
+  "participation": "voluntary",
+  "replay_manifest": {
+    "argv": [
+      "python3",
+      "scripts/local_probe.py",
+      "--wait-seconds",
+      "120",
+      "--check-chat",
+      "--allow-loopback"
+    ],
+    "before_state_sha256": "2c4a0a94aa1539cd7688f0f36cbdf50d6481d135f152c282e3a0ca308a657873",
+    "duration_ms": 120000,
+    "input_sha256": "8db3a465115ee4e9af949ed1148ef937e48657d09bc83e28f2476e74ebdcbd05",
+    "logical_cwd": "<rapp-root>",
+    "output_bytes": 95,
+    "output_sha256": "03034d9afee949f967c873044c56beb92dcce9b65cbb033c654bf0fcd8a2e863",
+    "phase": "exact-local-retest"
+  },
+  "report_controls": {
+    "quarantine_reasons": [],
+    "quarantined": false
+  },
+  "retest_id": "7c44fd03257be18fade414a8ad366de95d20a8224dc8d56e195b5152422ae19a",
+  "schema": "rar-installer-troubleshooter/retest-1",
+  "status": "PASS",
+  "support_system": "RAPP Roadside",
+  "telemetry": false,
+  "wire_preserved": {
+    "method": "POST",
+    "path": "/chat",
+    "request_field": "user_input",
+    "success_keys": [
+      "response",
+      "agent_logs",
+      "session_id"
+    ]
+  }
+}

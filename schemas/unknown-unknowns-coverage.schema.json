@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rapp-roadside:unknown-unknowns-coverage:1",
+  "title": "RAPP Roadside unknown-unknowns coverage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "threat_model",
+    "support_system",
+    "closed_loop",
+    "machine_issue_artifact",
+    "maintainer_system",
+    "principle",
+    "coverage_status",
+    "domains",
+    "scaling",
+    "evidence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "rapp-roadside/unknown-unknowns-coverage-1"
+    },
+    "threat_model": {
+      "const": "public-rapp-roadside-safety-domains"
+    },
+    "support_system": {
+      "const": "RAPP Roadside"
+    },
+    "closed_loop": {
+      "const": "rapp/closed-loop.json"
+    },
+    "machine_issue_artifact": {
+      "const": "Roadside Frame"
+    },
+    "maintainer_system": {
+      "const": "RAPP Pit Crew"
+    },
+    "principle": {
+      "type": "string"
+    },
+    "coverage_status": {
+      "const": "COVERED_BY_LOCAL_MUTATIONS"
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "applicable",
+          "controls",
+          "mutations"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applicable": {
+            "const": true
+          },
+          "controls": {
+            "type": "array",
+            "minItems": 1
+          },
+          "mutations": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "scaling": {
+      "type": "object",
+      "required": [
+        "claim",
+        "unbounded_or_infinite_claim",
+        "global_lock",
+        "global_raw_data_store"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1
+    }
+  }
+}

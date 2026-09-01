@@ -1,0 +1,379 @@
+{
+  "display_name": "RAPP Roadside",
+  "files": [
+    {
+      "bytes": 714,
+      "path": ".github/workflows/test.yml",
+      "sha256": "36cd3ea2bc1693e17d608935ad58f098cf4dbb2175615331a22be66b2bbe1128"
+    },
+    {
+      "bytes": 128,
+      "path": ".gitignore",
+      "sha256": "d186ea2ddb41898eb9f45896cf93130cadf9b97a336b95dcd64f49b24335d2c8"
+    },
+    {
+      "bytes": 746,
+      "path": "CONTRIBUTING.md",
+      "sha256": "e7c897d601a346ce9305cbae41b22da6e7bda46f2b10b9ad1601d39a48a8bce2"
+    },
+    {
+      "bytes": 1063,
+      "path": "LICENSE",
+      "sha256": "de8ea5b9a8a17402a37ddd78c104245d4a5c27648fba83b0e3ef0ae9cc033220"
+    },
+    {
+      "bytes": 1679,
+      "path": "PRIVACY.md",
+      "sha256": "1d6ac7db1596e57d363c59b76e2da1f9394f23a4ea51ab885e4ff8819137fefb"
+    },
+    {
+      "bytes": 2371,
+      "path": "README.md",
+      "sha256": "81724d9e54ba0f85853db5fa7b39c741b57c04de3ee732cc8216a59600125134"
+    },
+    {
+      "bytes": 1697,
+      "path": "SECURITY.md",
+      "sha256": "8441b29ea7d22435f614fd6f7eac87ac5aec8907394ee441c35d631d9407f390"
+    },
+    {
+      "bytes": 9922,
+      "path": "SKILL.md",
+      "sha256": "8bd0b676ee3a5cc5658fae1ee1bfa7699abdae98d93295ad8684ed3e0b06bc6f"
+    },
+    {
+      "bytes": 4424,
+      "path": "canonical.html",
+      "sha256": "e04483dd0d6f4d80895152ade66853508fd9981c8c5431dfef1f966271ffbbdb"
+    },
+    {
+      "bytes": 4265,
+      "path": "companion/PLAYBOOK.md",
+      "sha256": "14ae1822cef12d4047797440902a338a0300396bff577b4b7bb0d157d3a476e9"
+    },
+    {
+      "bytes": 2114,
+      "path": "docs/CROSS-AGENT.md",
+      "sha256": "a02dfbec5726bd7ed515396b75f81cec21c0ede39b8321b904ceb64321be93de"
+    },
+    {
+      "bytes": 699,
+      "path": "fixtures/linux-launcher-mode/before.json",
+      "sha256": "5094d97770aab5a179b3915311d81e107a24952bf8ea5681461ebe9e69f2bc7f"
+    },
+    {
+      "bytes": 701,
+      "path": "fixtures/macos-installer-drift/before.json",
+      "sha256": "8ecfcc6ce6112b6b1d67b2b04c0fd7c9205b2b51156c0f7f7676d390e3a509c5"
+    },
+    {
+      "bytes": 4661,
+      "path": "fixtures/synthetic-slow-setup/after.json",
+      "sha256": "6ff204faa7d4062c632d05ae589b3a217199998129670d60870a3a4e6c571d90"
+    },
+    {
+      "bytes": 4537,
+      "path": "fixtures/synthetic-slow-setup/before.json",
+      "sha256": "5bac25f33156b2dbb890cfc33de8256abbd70e6521c60f8d1651b47383d865f1"
+    },
+    {
+      "bytes": 38,
+      "path": "fixtures/synthetic-slow-setup/bytes/after-state.json",
+      "sha256": "2c4a0a94aa1539cd7688f0f36cbdf50d6481d135f152c282e3a0ca308a657873"
+    },
+    {
+      "bytes": 63,
+      "path": "fixtures/synthetic-slow-setup/bytes/before-state.json",
+      "sha256": "3b5df8fc67049911781bcd2689afff18ca5959c2c2965847a8a81638c0a8edd4"
+    },
+    {
+      "bytes": 47,
+      "path": "fixtures/synthetic-slow-setup/bytes/catalog.json",
+      "sha256": "cd580436958c4b2d56068a6541382d508c972987c765420fbc5ae3a787899fb3"
+    },
+    {
+      "bytes": 30,
+      "path": "fixtures/synthetic-slow-setup/bytes/dependency.lock",
+      "sha256": "d82764a06aafcba6a91aceac3a626686df3b64ca636b07cc728792d891020602"
+    },
+    {
+      "bytes": 14,
+      "path": "fixtures/synthetic-slow-setup/bytes/install.cmd",
+      "sha256": "4066d161da3adcee4c0963094bc937448d45589a0b864bfe0cd3b124a06f5ba3"
+    },
+    {
+      "bytes": 23,
+      "path": "fixtures/synthetic-slow-setup/bytes/install.ps1",
+      "sha256": "17514fcc407397cfa7434fa6e9095fcdbc89be66ddc9652f1de003f4dec70b3b"
+    },
+    {
+      "bytes": 23,
+      "path": "fixtures/synthetic-slow-setup/bytes/install.sh",
+      "sha256": "6ecf06f6dbbab6a920b5b208bc7c4069ca266b150d6c00533a00b5975a8417ca"
+    },
+    {
+      "bytes": 405,
+      "path": "fixtures/synthetic-slow-setup/bytes/installer-release-frame.json",
+      "sha256": "b9c23cbd73beb9fba9ee3e04c9f5073d1c86a1be23ee55c9b5ae4121ba794d19"
+    },
+    {
+      "bytes": 122,
+      "path": "fixtures/synthetic-slow-setup/bytes/issue-signature.json",
+      "sha256": "02078f8619845cafe3f648978c6a5e7c684305a7dd4a73ccc9ed0907f3008b48"
+    },
+    {
+      "bytes": 95,
+      "path": "fixtures/synthetic-slow-setup/bytes/output-after-summary.json",
+      "sha256": "03034d9afee949f967c873044c56beb92dcce9b65cbb033c654bf0fcd8a2e863"
+    },
+    {
+      "bytes": 61,
+      "path": "fixtures/synthetic-slow-setup/bytes/output-summary.json",
+      "sha256": "6000ab6363314a2e05eea9dc52d4bc8a6ed2853d48540181075fabbe7e2c8af2"
+    },
+    {
+      "bytes": 69,
+      "path": "fixtures/synthetic-slow-setup/bytes/replay-after-input.json",
+      "sha256": "8db3a465115ee4e9af949ed1148ef937e48657d09bc83e28f2476e74ebdcbd05"
+    },
+    {
+      "bytes": 72,
+      "path": "fixtures/synthetic-slow-setup/bytes/replay-input.json",
+      "sha256": "45403098388a2231a424dd291448329d337d2fd7b18b83f8832de64f24416d69"
+    },
+    {
+      "bytes": 79,
+      "path": "fixtures/synthetic-slow-setup/bytes/reporting-ai.txt",
+      "sha256": "7f3df404b84e5422597617abb6956f2b549e4160ee02394ff38fc46db2306ea1"
+    },
+    {
+      "bytes": 96,
+      "path": "fixtures/synthetic-slow-setup/bytes/ring-manifest.json",
+      "sha256": "63ffba818af5a9423a5522f6c752f57dd638d7794d044d07376ad65bcd584b51"
+    },
+    {
+      "bytes": 81,
+      "path": "fixtures/synthetic-slow-setup/bytes/setup-summary.json",
+      "sha256": "18cc911cd3da43e17088c6962256a71fdc28fba9af01a0b91a0d71285e804001"
+    },
+    {
+      "bytes": 69,
+      "path": "fixtures/synthetic-slow-setup/bytes/setup.log",
+      "sha256": "d31308e5265407118933b53bea94b09290a51bbdb49b131ea436fbff480e62ad"
+    },
+    {
+      "bytes": 130,
+      "path": "fixtures/synthetic-slow-setup/bytes/source-manifest.json",
+      "sha256": "cd9b416ebb24fbc274b00b3b58b23e29618d71480343b52fda96f2012908242a"
+    },
+    {
+      "bytes": 679,
+      "path": "fixtures/windows-post-chat/before.json",
+      "sha256": "fb6a2d0d3bd73f5a90eeca7b45d44d29ed0f2b54f251e30dea1bcdd060f864c8"
+    },
+    {
+      "bytes": 2389,
+      "path": "manifest.json",
+      "sha256": "2f5d931bd3e8dbb25b18f5308263607a6955711a607ec87a5dc24fb4131ed9bb"
+    },
+    {
+      "bytes": 460,
+      "path": "rapp/agent.lock.json",
+      "sha256": "9c7273302b9924b9bd90ff5fff9baadcb19b28f3c6aee0017cf8bd882c316807"
+    },
+    {
+      "bytes": 2267,
+      "path": "rapp/capability.json",
+      "sha256": "2d221ef009b637b631484f962da4b5ff9038fa641a46b7214684ef66e81d1373"
+    },
+    {
+      "bytes": 3796,
+      "path": "rapp/closed-loop.json",
+      "sha256": "2b9fd414e11912b03933050ad0787580257a3684012529a50887e9e07c4d8ca8"
+    },
+    {
+      "bytes": 821,
+      "path": "rapp/lifecycle.json",
+      "sha256": "a97cd3ddfa0aa8b43dc4ccaf1a6eca83329543bea8f3a71e60352c0c0fd71340"
+    },
+    {
+      "bytes": 1176,
+      "path": "rapp/manifest.json",
+      "sha256": "88786a8cc07d9e1452a84149fe6a58429b0099e62ef22e756e34e80fdf341271"
+    },
+    {
+      "bytes": 88396,
+      "path": "rar_installer_troubleshooter_agent.py",
+      "sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d"
+    },
+    {
+      "bytes": 3284,
+      "path": "schemas/agent-input.schema.json",
+      "sha256": "e18219f8d90e9b468ec824edb998069279b3c2ed9ee367ff4aef7b03c1476e68"
+    },
+    {
+      "bytes": 1058,
+      "path": "schemas/closed-loop.schema.json",
+      "sha256": "33dce7c0aafce17eec31a030676d900d7b076135b2f959801c00957d7bade8ed"
+    },
+    {
+      "bytes": 1178,
+      "path": "schemas/customer-confirmation.schema.json",
+      "sha256": "1704f05040451b0054722d2d67cef9f241e04b95b10750901411af5b4b0546ab"
+    },
+    {
+      "bytes": 2182,
+      "path": "schemas/export-manifest.schema.json",
+      "sha256": "c55953fe66f470b48c6925d501e883e2884194b386276b256c0e17b8d70c0ac3"
+    },
+    {
+      "bytes": 1144,
+      "path": "schemas/issue-signature.schema.json",
+      "sha256": "5027debaa1da8e72b1d57ddc9305f9bdbb12f83192ca875f17e5817074c47e17"
+    },
+    {
+      "bytes": 2663,
+      "path": "schemas/issue.schema.json",
+      "sha256": "b6cdb7cf13cd787319c855f2aaa2b2f6a6e8b6ce3800f5a46449907bdb6fde86"
+    },
+    {
+      "bytes": 1410,
+      "path": "schemas/lifecycle.schema.json",
+      "sha256": "dc83c74860bf6896e673285733778400f18f6e85038534179031ab96d735bfb2"
+    },
+    {
+      "bytes": 13341,
+      "path": "schemas/observation.schema.json",
+      "sha256": "2b89fd0c82876620a56d9e406aa5145897e7a799186fc674a2525542694b9303"
+    },
+    {
+      "bytes": 1623,
+      "path": "schemas/quarantine.schema.json",
+      "sha256": "377726d30fe14cc69bb69256f8a260186e74d5c852dbb9c35d4a074d7b7963e7"
+    },
+    {
+      "bytes": 1713,
+      "path": "schemas/release-frame.schema.json",
+      "sha256": "2f1e51a39afb30872c60ece271a3721b469fa30a1cf1ddadaa33b732c6ebf2d8"
+    },
+    {
+      "bytes": 794,
+      "path": "schemas/repair-approval.schema.json",
+      "sha256": "5a42839a1df47e734699a2dbe7e38117310cc68cc610d19ea1ae98f68ca01964"
+    },
+    {
+      "bytes": 4928,
+      "path": "schemas/report.schema.json",
+      "sha256": "405978ae0b50d937a8ed6e22365bee94b3a965a3b4eae2b1fa692da1dde37bb0"
+    },
+    {
+      "bytes": 1240,
+      "path": "schemas/retest.schema.json",
+      "sha256": "7a38fe2e4e177a128dfddb4c8550888dc607a00e323d3c5b6ffba0723d4ae357"
+    },
+    {
+      "bytes": 2562,
+      "path": "schemas/rev-13-frame.schema.json",
+      "sha256": "f34cd770be4da501abdeba6db8c543781bcde1619b85e5988c79ad5aef372c5a"
+    },
+    {
+      "bytes": 382,
+      "path": "schemas/roadside-frame.schema.json",
+      "sha256": "85d6608206c3dc92a5912dac6f3811293ad1a2fd7f73c33112235c3db9095848"
+    },
+    {
+      "bytes": 1937,
+      "path": "schemas/unknown-unknowns-coverage.schema.json",
+      "sha256": "deaae402bfaf3ab552a2a36e5ef7516ea280728426859f904a1d64113bfb28e5"
+    },
+    {
+      "bytes": 5047,
+      "path": "scripts/build_export.py",
+      "sha256": "37347ab684a4da1a9522de975e11dd72c77354eac92a634c4073826a55ead890"
+    },
+    {
+      "bytes": 34898,
+      "path": "scripts/build_review_artifacts.py",
+      "sha256": "17bf1be07c6d46278ff4f034baf30aef55cb3add46fcbed5f33137744603677e"
+    },
+    {
+      "bytes": 3954,
+      "path": "scripts/extract_roadside_frame.py",
+      "sha256": "b2be8b838dbc72f6309603d433995a2822cdc5237169610d3d30c4b3aaa3d0bb"
+    },
+    {
+      "bytes": 1661,
+      "path": "scripts/hash_attachment.py",
+      "sha256": "44f15bacded07b5105fb7a5019a007c76870bfd8f1f401e666fd2e043096fe9f"
+    },
+    {
+      "bytes": 15537,
+      "path": "scripts/local_probe.py",
+      "sha256": "e9d895936be5f05af91e5cf23289f19362af0df3dd200447748e6d63d94d0624"
+    },
+    {
+      "bytes": 5267,
+      "path": "scripts/public_audit.py",
+      "sha256": "cd6a7a3f21b040f98714825c4dabbf640f7e79ed6d4a54f0340f0c899b4b92d4"
+    },
+    {
+      "bytes": 2645,
+      "path": "scripts/quarantine_report.py",
+      "sha256": "202ada48f0fea0862954552ca642020bd23420ae63fb8141dd28fa627ca6608c"
+    },
+    {
+      "bytes": 7943,
+      "path": "scripts/rar_lifecycle.py",
+      "sha256": "3a4d051605cbfc910ac3bbbf4d196a2882172fde350c235bc2830dc20f13dfbe"
+    },
+    {
+      "bytes": 5002,
+      "path": "scripts/refresh_integrity.py",
+      "sha256": "ab56eac438382b8d08c30797b47dd0287be33dff96c2c011861ff7b52cf1291a"
+    },
+    {
+      "bytes": 3281,
+      "path": "scripts/run_agent.py",
+      "sha256": "5cd4295a3d2bffe91958c49db8b7fb52cf2bc4f0b565b7393a7c5f7d0e6ff1c9"
+    },
+    {
+      "bytes": 21118,
+      "path": "scripts/skill_forge.py",
+      "sha256": "d883992ff4a5f252ebbf4f0e9bd8ef3efcfe0a2d54a4a13cdf43ee17802d38ac"
+    },
+    {
+      "bytes": 5837,
+      "path": "scripts/test_fresh_clone.py",
+      "sha256": "0b508ecbc96efa9e3e7c28c6b065782ff3de4f79029754e5d0a1e622e702b147"
+    },
+    {
+      "bytes": 1805,
+      "path": "scripts/write_handoff.py",
+      "sha256": "63c2c42e28c9fe51fd8242da565cdf365464266e175d281d5212b889b7ca2a77"
+    },
+    {
+      "bytes": 1383,
+      "path": "teams-sharing-instructions.md",
+      "sha256": "2275e9a6dc0842a10496f3546ef51d480d7b62c5043de53534048442d231a33b"
+    },
+    {
+      "bytes": 1512,
+      "path": "toasted/manifest.json",
+      "sha256": "02d7dcd13b182503fbfe702faab80c4fc27bb6ddf43390b4743dc6508a899ec9"
+    },
+    {
+      "bytes": 8677,
+      "path": "unknown-unknowns-coverage.json",
+      "sha256": "9bb189945300e9368208da5189c28eea4fbf33f23fca4cc7d1ff7494d46bd2a7"
+    }
+  ],
+  "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
+  "maintainer_system": "RAPP Pit Crew",
+  "protocol_identity_retained": true,
+  "schema": "toasted-package-lock/1.0",
+  "skill_hash_scope": "core-files-before-manifest-annotations",
+  "skill_name": "rapp-roadside",
+  "skill_sha256": "b0316149fac89d1f20b8e451bc9a29f3601b794f6255bb1fc489c6f587416125",
+  "source_sha256": "300239c9cb44944d36e3ce39e1d3d26e366c0a1580afa3e45e05473cb8dc893d",
+  "version": "1.0.0"
+}

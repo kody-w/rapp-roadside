@@ -1,0 +1,78 @@
+{
+  "cases": [
+    {
+      "actual_finding": "report-quarantined",
+      "domain": "01-untrusted-reporting-ai",
+      "expected_finding": "report-quarantined",
+      "passed": true
+    },
+    {
+      "actual_finding": "report-quarantined",
+      "domain": "02-secret-privacy-rights-leakage",
+      "expected_finding": "report-quarantined",
+      "passed": true
+    },
+    {
+      "actual_finding": "platform-policy-unknown",
+      "domain": "04-environmental-unknowns",
+      "expected_finding": "platform-policy-unknown",
+      "passed": true
+    },
+    {
+      "actual_finding": "exact-byte-bindings-incomplete",
+      "domain": "05-version-ring-and-supply-chain-drift",
+      "expected_finding": "exact-byte-bindings-incomplete",
+      "passed": true
+    },
+    {
+      "actual_finding": "report-quarantined",
+      "domain": "06-nonreproducible-user-evidence",
+      "expected_finding": "report-quarantined",
+      "passed": true
+    },
+    {
+      "actual_finding": "report-quarantined",
+      "domain": "07-support-frame-spam-replay-and-poisoning",
+      "expected_finding": "report-quarantined",
+      "passed": true
+    },
+    {
+      "actual_finding": "direct-main-change-refused",
+      "domain": "08-fix-regression-and-main-release-risk",
+      "expected_finding": "direct-main-change-refused",
+      "passed": true
+    },
+    {
+      "actual_finding": "roadside-cell-backpressure",
+      "domain": "10-scale-cost-and-coordination",
+      "expected_finding": "roadside-cell-backpressure",
+      "passed": true
+    },
+    {
+      "actual_finding": "report-quarantined",
+      "domain": "10-scale-cost-and-coordination",
+      "expected_finding": "report-quarantined",
+      "passed": true
+    },
+    {
+      "actual_finding": "test_copy_repair_requires_bound_human_approval",
+      "domain": "03-destructive-or-wrong-repair",
+      "expected_finding": "named-mutation-test-pass",
+      "passed": true
+    },
+    {
+      "actual_finding": "test_fresh_install_verify_remove_preserves_removed_bytes",
+      "domain": "09-distribution-and-skill-lifecycle",
+      "expected_finding": "named-mutation-test-pass",
+      "passed": true
+    }
+  ],
+  "global_lock": false,
+  "global_raw_data_store": false,
+  "maintainer_system": "RAPP Pit Crew",
+  "scaling_claim": "horizontal-cellular-with-measured-backpressure",
+  "schema": "rapp-roadside/unknown-unknowns-evidence-1",
+  "status": "PASS",
+  "support_system": "RAPP Roadside",
+  "unbounded_or_infinite_claim": false
+}
