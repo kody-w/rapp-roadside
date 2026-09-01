@@ -1,12 +1,12 @@
 {
   "agent": "rar_installer_troubleshooter_agent.py",
   "algorithm": "sha256",
-  "bytes": 107966,
+  "bytes": 107959,
   "display_name": "RAPP Roadside",
   "identity": "rappid:@kody-w/rar-installer-troubleshooter:296872e9cd739d0549707b5c22abfd3654c3667652ea55dedaa5621b9e5f733b",
   "line_endings": "LF",
   "maintainer_system": "RAPP Pit Crew",
   "schema": "rapp-agent-lock/1.0",
-  "sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
+  "sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
   "version": "1.0.0"
 }

@@ -79,8 +79,8 @@ __manifest__ = {
         "deterministic",
         "toasted",
     ],
-    "category": "developer-tools",
-    "quality_tier": "candidate",
+    "category": "devtools",
+    "quality_tier": "community",
     "requires_env": [],
     "dependencies": ["@rapp/basic_agent"],
 }

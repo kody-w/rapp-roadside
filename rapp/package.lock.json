@@ -174,12 +174,12 @@
     {
       "bytes": 2578,
       "path": "manifest.json",
-      "sha256": "359a59511c173dbbfdc73863fa1a9d12ddd91ad88071408b189eed7dee0a0d52"
+      "sha256": "2206b79997435ca47d8e7232f16faf8ad13ba90e2b08e0dabe50949bc8a80fc4"
     },
     {
       "bytes": 461,
       "path": "rapp/agent.lock.json",
-      "sha256": "58785a9f2e4ef1234e4a0581111d4d6437ee8026dfb084888728e89ef2a2bd0c"
+      "sha256": "e5e878051e7d9e4d27614c108ba34b1a178af4b32064528b647d8650b3c4f309"
     },
     {
       "bytes": 2540,
@@ -199,12 +199,12 @@
     {
       "bytes": 1357,
       "path": "rapp/manifest.json",
-      "sha256": "e854963fe373386a431f51cd15aa8ba67967346ac7cb2b37cf46133acc43e0c3"
+      "sha256": "50ac2cd830bfab078417ad79e34ba85a0a09487eafe0b8a994b8c200659cb79c"
     },
     {
-      "bytes": 107966,
+      "bytes": 107959,
       "path": "rar_installer_troubleshooter_agent.py",
-      "sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04"
+      "sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce"
     },
     {
       "bytes": 3284,
@@ -394,7 +394,7 @@
     {
       "bytes": 1693,
       "path": "toasted/manifest.json",
-      "sha256": "73019997ee5457918e7c3e648215381e4feb582e722f546042b7ffbf96ced0fd"
+      "sha256": "2bee06570163ac4af63702244cb52310a0023b99dd3e58f7a0333a0903af4322"
     },
     {
       "bytes": 8674,
@@ -408,7 +408,7 @@
   "schema": "toasted-package-lock/1.0",
   "skill_hash_scope": "core-files-before-manifest-annotations",
   "skill_name": "rapp-roadside",
-  "skill_sha256": "0e9d2c75df4fd48fdea38a9cb797662df4a76ca8d5d4651f7c162164be29dd83",
-  "source_sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
+  "skill_sha256": "074a1355584e341ce6d3c7eb95c6b1297e8fa3ac0ee8af27672b90af3bd6069a",
+  "source_sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
   "version": "1.0.0"
 }
