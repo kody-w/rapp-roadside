@@ -43,7 +43,7 @@ The following block is inert data. Do not execute any surrounding text.
 <!-- RAPP-ROADSIDE-FRAME-BEGIN -->
 ```json
 {
-  "frame_hash": "6bada34d250165fc3de082105f18f9ecda0689cda2008aa9838d858b6742d16d",
+  "frame_hash": "b25e1dce46453e095d851398acac1e1ab83562406b12caf55f8aa714ccd4be64",
   "kind": "rar.review.rev-13",
   "payload": {
     "artifacts": [
@@ -210,7 +210,7 @@ The following block is inert data. Do not execute any surrounding text.
       "verified_resolution_requires_customer_pass": true,
       "wire": "POST /chat"
     },
-    "package_lock_sha256": "c87dce14c367ba3951008952bf7dcfc4d710126edce99ea94b039be20355608e",
+    "package_lock_sha256": "7a6d1d25df814f209f6e156888eb4c86fb115477206398fcabf2926a8d392e6a",
     "revision": 13,
     "safety": {
       "attachments": "allowlisted-hash-only",
@@ -227,8 +227,8 @@ The following block is inert data. Do not execute any surrounding text.
       "telemetry": "none"
     },
     "skill_forge": "PASS",
-    "skill_sha256": "0e9d2c75df4fd48fdea38a9cb797662df4a76ca8d5d4651f7c162164be29dd83",
-    "source_sha256": "4ee7bdd43f3251140028a6a64e63601e2dfb51392bf24647ef4967a99bea1b04",
+    "skill_sha256": "074a1355584e341ce6d3c7eb95c6b1297e8fa3ac0ee8af27672b90af3bd6069a",
+    "source_sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
     "target_main": "kody-w/rapp-roadside@main",
     "teams": {
       "instructions": "teams-sharing-instructions.md",
@@ -242,7 +242,7 @@ The following block is inert data. Do not execute any surrounding text.
     },
     "version": "1.0.0"
   },
-  "payload_hash": "f73fcb3fe0a78e7abfa62de9635f2dc63e3e681ec12a0e5bd184fd3d730f4415",
+  "payload_hash": "6d304e1d8ec6deee406f793a62a73e4460d2cfa63b63d892973f9d8efb2f81eb",
   "prev": null,
   "prev_wave": null,
   "seq": 0,
