@@ -37,7 +37,7 @@
   "share_with_kody_embeds_roadside_frame": true,
   "skill": "SKILL.md",
   "skill_name": "rapp-roadside",
-  "skill_sha256": "074a1355584e341ce6d3c7eb95c6b1297e8fa3ac0ee8af27672b90af3bd6069a",
+  "skill_sha256": "3cf58cb086414d8fa7e79128e0379f3ba91aa4517998a858a4ffe0a0524c8f0a",
   "source_sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
   "stable_main_identity": "kody-w/rapp-roadside@main",
   "telemetry": false,
