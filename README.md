@@ -1,5 +1,9 @@
 # RAPP Roadside candidate
 
+<!-- rapp1:network-header:start -->
+[![RAPP/1](https://kody-w.github.io/rapp-hive-public/portfolio/badges/rapp-roadside.svg)](https://github.com/kody-w/rapp-hive-public/blob/main/portfolio/repos/rapp-roadside.md) · **New to RAPP?** [Start here: get your Brainstem →](https://github.com/kody-w/rapp-installer#start-here)
+<!-- rapp1:network-header:end -->
+
 RAPP Roadside is a local-only RAPP/Toasted on-device support skill candidate
 for `https://github.com/kody-w/rapp-roadside`. It diagnoses sanitized RAPP
 setup observations, emits

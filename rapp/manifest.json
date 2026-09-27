@@ -23,7 +23,7 @@
   "repository": "https://github.com/kody-w/rapp-roadside",
   "requires_env": [],
   "schema": "rapp-agent/1.0",
-  "skill_sha256": "074a1355584e341ce6d3c7eb95c6b1297e8fa3ac0ee8af27672b90af3bd6069a",
+  "skill_sha256": "3cf58cb086414d8fa7e79128e0379f3ba91aa4517998a858a4ffe0a0524c8f0a",
   "source_sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
   "telemetry": false,
   "unpinned_integrity_claim": "internal-consistency-only",

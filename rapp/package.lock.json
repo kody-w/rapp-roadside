@@ -27,9 +27,9 @@
       "sha256": "1d6ac7db1596e57d363c59b76e2da1f9394f23a4ea51ab885e4ff8819137fefb"
     },
     {
-      "bytes": 3162,
+      "bytes": 3520,
       "path": "README.md",
-      "sha256": "a3c7b05581b42870faeb0c0f42ed951bdb4a74c7f103cb7c5f516495f3bb98ff"
+      "sha256": "114e49c5c2c24737a21e8991f86ec2879d8533260b1df309f3e1e20f81700db3"
     },
     {
       "bytes": 1838,
@@ -174,7 +174,7 @@
     {
       "bytes": 2578,
       "path": "manifest.json",
-      "sha256": "2206b79997435ca47d8e7232f16faf8ad13ba90e2b08e0dabe50949bc8a80fc4"
+      "sha256": "795e1c3e046794d9a636affdf7cbb3860993c8ef0eeaf9f1694be752adbeaa6f"
     },
     {
       "bytes": 461,
@@ -199,7 +199,7 @@
     {
       "bytes": 1357,
       "path": "rapp/manifest.json",
-      "sha256": "50ac2cd830bfab078417ad79e34ba85a0a09487eafe0b8a994b8c200659cb79c"
+      "sha256": "23c3e00a38dc4e33d8246a019d9ff523b20abd39efa55d237d82b1e1ead6356a"
     },
     {
       "bytes": 107959,
@@ -394,7 +394,7 @@
     {
       "bytes": 1693,
       "path": "toasted/manifest.json",
-      "sha256": "2bee06570163ac4af63702244cb52310a0023b99dd3e58f7a0333a0903af4322"
+      "sha256": "f28729e634aa2bc5cc5b1a474533b5fd8d57df75b8007e5a4af52a7d71e3bc5a"
     },
     {
       "bytes": 8674,
@@ -408,7 +408,7 @@
   "schema": "toasted-package-lock/1.0",
   "skill_hash_scope": "core-files-before-manifest-annotations",
   "skill_name": "rapp-roadside",
-  "skill_sha256": "074a1355584e341ce6d3c7eb95c6b1297e8fa3ac0ee8af27672b90af3bd6069a",
+  "skill_sha256": "3cf58cb086414d8fa7e79128e0379f3ba91aa4517998a858a4ffe0a0524c8f0a",
   "source_sha256": "b638078c3ab5fc119a5cba648640387f3ad8af7ea81b72d501e87f04bc10f8ce",
   "version": "1.0.0"
 }
